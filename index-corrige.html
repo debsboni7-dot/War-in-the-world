@@ -52,6 +52,7 @@ function makeSurfaceTexture(name,base,light,seed){
  q.globalAlpha=1;const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());t.name=name;return t;
 }
 surfaceTextureSpecs.forEach((v,i)=>surfaceTextures[v[0]]=makeSurfaceTexture(v[0],v[1],v[2],i+1));
+surfaceTextures['herbe'].repeat.set(18,18);surfaceTextures['terre'].repeat.set(12,12);surfaceTextures['roche'].repeat.set(10,10);
 mats.soil.map=surfaceTextures['terre'];mats.concrete.map=surfaceTextures['béton'];mats.metal.map=surfaceTextures['acier-brossé'];mats.sandbag.map=surfaceTextures['sacs-sable'];mats.dark.map=surfaceTextures['métal-noir'];mats.green.map=surfaceTextures['tissu-olive'];mats.rust.map=surfaceTextures['rouille'];mats.glass.map=surfaceTextures['verre-teint'];mats.yellow.map=surfaceTextures['peinture-jaune'];
 for(const k of ['soil','concrete','metal','sandbag','dark','green','rust','glass','yellow'])mats[k].needsUpdate=true;
 const weaponTextureMaterials=surfaceTextureSpecs.map(v=>new THREE.MeshStandardMaterial({map:surfaceTextures[v[0]],roughness:/verre/.test(v[0])?.35:.88,metalness:/acier|métal/.test(v[0])?.55:.04}));

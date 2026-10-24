@@ -9,7 +9,7 @@ Le jeu démarre dans `index.html`. Pour publier : **Settings → Pages → Deplo
 ## Fonctionnalités du prototype
 
 - Insertion aérienne, descente/parachute et atterrissage.
-- Terrain de guerre ravagé : boue, gravier, pierres cassées, cratères, murs détruits, gravats externes CC0, fumée et brouillard; aucune herbe n'est utilisée comme matériau du sol.
+- Terrain de guerre ravagé : boue, gravier, pierres cassées, cratères, murs détruits, gravats externes CC0, fumée et brouillard; aucune texture d'herbe ni végétation n'est utilisée dans le décor.
 - 50 armes originales dans le catalogue, butin au sol, munitions, rechargement, visée et changement d'arme.
 - 11 bots, santé, éliminations, mini-carte et zone de survie rétrécissante.
 - Commandes tactiles, clavier/souris et réglages graphiques.
@@ -18,8 +18,8 @@ Le jeu démarre dans `index.html`. Pour publier : **Settings → Pages → Deplo
 ## Modèles 3D externes
 
 - Armes 3D externes : packs de fusils, pistolets, SMG, fusil à pompe et sniper du dépôt [petroulacl/fps-asset-kit](https://github.com/petroulacl/fps-asset-kit), annoncé CC0/public domain. Le jeu garde ses modèles procéduraux en secours si le téléchargement échoue.
-- Décors de guerre : modèles `SM_Rubble_Pile.glb`, `SM_Debris_Scatter.glb` et `SM_Wall_Damaged_4m.glb` du dépôt [JaronKBragg7337/asset-pack-ue-threejs-blender-unity](https://github.com/JaronKBragg7337/asset-pack-ue-threejs-blender-unity), annoncés CC0.
-- Personnage militaire sélectionné : [Military Character Kit 1.1](https://sketchfab.com/3d-models/military-character-kit-11-cc0-bf37b98b99534ed2b5eb4507f0564e1d), CC0 selon la page de l'auteur. Le kit complet n'est pas encore stocké dans ce dépôt; il faut récupérer son fichier source pour pouvoir remplacer le soldat actuel par ses différents éléments sans altérer ses tenues.
+- Décors de guerre : modèles `SM_Rubble_Pile.glb`, `SM_Debris_Scatter.glb` et `SM_Wall_Damaged_4m.glb` du dépôt [JaronKBragg7337/asset-pack-ue-threejs-blender-unity](https://github.com/JaronKBragg7337/asset-pack-ue-threejs-blender-unity), annoncés CC0. Des morceaux de murs, des pierres et des poutres sont aussi générés directement par le jeu.
+- Soldats ennemis faits à la main dans Three.js : dix variantes géométriques distinctes avec différences de casque, silhouette, sac, plaques, masque, antenne, pochettes et équipement. Elles sont générées directement dans le code, sans télécharger de personnage lourd. Le soldat externe animé reste réservé au joueur. Ce ne sont pas dix fichiers GLB exportés depuis Blender, mais dix modèles procéduraux construits dans le jeu.
 - Soldat animé de secours : modèle d'exemple Three.js `Soldier.glb` (`https://threejs.org/examples/models/gltf/Soldier.glb`).
 - Hélicoptère : modèle GLB Light Helicopter d'Innerscene, dédié CC0 (`https://www.innerscene.com/tools/library/3d-parts/light-helicopter-eab26245`).
 - Si un modèle distant ne charge pas, le prototype conserve un modèle de secours construit dans le code.

@@ -6,6 +6,7 @@ on:
     paths:
       - "tools/generate_soldier_batch.py"
       - "tools/generate_weapon_prop_batch.py"
+      - "tools/generate_vehicle_batch.py"
       - ".github/workflows/generate-soldiers.yml"
 
 permissions:
@@ -25,6 +26,8 @@ jobs:
         run: blender --background --python tools/generate_soldier_batch.py
       - name: Generate weapons and combat props
         run: blender --background --python tools/generate_weapon_prop_batch.py
+      - name: Generate vehicle prototypes
+        run: blender --background --python tools/generate_vehicle_batch.py
       - name: Commit generated GLB files
         run: |
           git config user.name "github-actions[bot]"
@@ -33,6 +36,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No generated model changes."
           else
-            git commit -m "Generate infantry, weapon and combat prop GLB prototypes"
+            git commit -m "Generate infantry, weapon, combat prop and vehicle GLB prototypes"
             git push
           fi

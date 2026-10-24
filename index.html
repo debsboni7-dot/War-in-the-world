@@ -63,8 +63,8 @@ const terrainGeo=new THREE.PlaneGeometry(420,420,110,110);const pos=terrainGeo.a
 // Terrain visible uniquement en terre, gravier et roche : aucune herbe ni végétation n'est placée.
 // Roads, craters and wrecked battlefield props
 const roadMat=new THREE.MeshStandardMaterial({map:surfaceTextures['asphalte'],color:'#b0b0a8',roughness:.98});const roadGeo=new THREE.PlaneGeometry(15,340,12,136);const roadPos=roadGeo.attributes.position;for(let i=0;i<roadPos.count;i++){const x=roadPos.getX(i),z=-roadPos.getY(i);roadPos.setZ(i,(Math.abs(x)<7.35&&z>-97.5&&z<-78.5)?-.04:terrainBaseHeight(x,z)+.035)}roadGeo.computeVertexNormals();const road=new THREE.Mesh(roadGeo,roadMat);road.rotation.x=-Math.PI/2;road.receiveShadow=true;world.add(road);
-for(let i=0;i<18;i++){const x=rand(-140,140),z=rand(-150,150),r=rand(1.5,5);const crater=mesh(new THREE.CircleGeometry(r,16),new THREE.MeshStandardMaterial({color:'#30352e',roughness:1}),x,.012,z);crater.rotation.x=-Math.PI/2;const rim=mesh(new THREE.TorusGeometry(r,.12,4,24),mats.rust,x,.04,z);rim.rotation.x=Math.PI/2}
-function building(x,z,w,d,h){const g=new THREE.Group();g.position.set(x,0,z);world.add(g);const wallH=h*.52;box(mats.concrete,-w*.34,wallH*.5,0,w*.25,wallH,d*.9,g);box(mats.concrete,w*.15,wallH*.36,-d*.38,w*.7,wallH*.72,.55,g);box(mats.concrete,-w*.04,wallH*.42,d*.42,w*.48,wallH*.84,.48,g);box(mats.concrete,w*.38,wallH*.3,d*.08,.5,wallH*.6,d*.58,g);box(mats.dark,0,wallH*.18,-d*.08,w*.12,wallH*.35,.08,g);for(let i=0;i<Math.floor(w*.8);i++){const px=rand(-w*.55,w*.55),pz=rand(-d*.55,d*.55),sz=rand(.35,1.25);const stone=mesh(new THREE.DodecahedronGeometry(sz,0),i%3?mats.concrete:mats.rust,px,sz*.42,pz,rand(.7,1.6),rand(.35,.8),rand(.7,1.5),g);stone.rotation.set(rand(0,1),rand(0,TAU),rand(0,1))}for(let i=0;i<5;i++){const beam=box(mats.metal,rand(-w*.4,w*.4),rand(.15,wallH*.55),rand(-d*.4,d*.4),rand(1.2,3.2),.12,.16,g);beam.rotation.z=rand(-.7,.7);beam.rotation.y=rand(0,TAU)}solids.push({x,z,hx:w*.55,hz:d*.55});return g}
+for(let i=0;i<18;i++){const x=rand(-140,140),z=rand(-150,150),r=rand(1.5,5),gy=terrainBaseHeight(x,z);const crater=mesh(new THREE.CircleGeometry(r,16),new THREE.MeshStandardMaterial({color:'#30352e',roughness:1}),x,gy+.018,z);crater.rotation.x=-Math.PI/2;const rim=mesh(new THREE.TorusGeometry(r,.12,4,24),mats.rust,x,gy+.045,z);rim.rotation.x=Math.PI/2}
+function building(x,z,w,d,h){const g=new THREE.Group();g.position.set(x,terrainBaseHeight(x,z),z);world.add(g);const wallH=h*.52;box(mats.concrete,-w*.34,wallH*.5,0,w*.25,wallH,d*.9,g);box(mats.concrete,w*.15,wallH*.36,-d*.38,w*.7,wallH*.72,.55,g);box(mats.concrete,-w*.04,wallH*.42,d*.42,w*.48,wallH*.84,.48,g);box(mats.concrete,w*.38,wallH*.3,d*.08,.5,wallH*.6,d*.58,g);box(mats.dark,0,wallH*.18,-d*.08,w*.12,wallH*.35,.08,g);for(let i=0;i<Math.floor(w*.8);i++){const px=rand(-w*.55,w*.55),pz=rand(-d*.55,d*.55),sz=rand(.35,1.25);const stone=mesh(new THREE.DodecahedronGeometry(sz,0),i%3?mats.concrete:mats.rust,px,sz*.42,pz,rand(.7,1.6),rand(.35,.8),rand(.7,1.5),g);stone.rotation.set(rand(0,1),rand(0,TAU),rand(0,1))}for(let i=0;i<5;i++){const beam=box(mats.metal,rand(-w*.4,w*.4),rand(.15,wallH*.55),rand(-d*.4,d*.4),rand(1.2,3.2),.12,.16,g);beam.rotation.z=rand(-.7,.7);beam.rotation.y=rand(0,TAU)}solids.push({x,z,hx:w*.55,hz:d*.55});return g}
 for(const a of [[-30,-35,16,14,6],[25,-40,18,13,7],[-50,12,13,17,5],[48,23,17,14,6],[-15,55,15,12,5],[68,-8,12,18,5],[5,83,20,12,7],[-74,-45,16,14,6],[80,64,16,12,5]])building(...a);
 // Rubble fields: broken masonry, concrete chunks and twisted metal; no grass props.
 const rubbleMats=[mats.concrete,mats.soil,mats.rust,mats.dark];for(let i=0;i<110;i++){const x=rand(-185,185),z=rand(-185,185);if(Math.abs(x)<9&&z>-100&&z<-75)continue;const r=rand(.18,1.25),geo=i%3===0?new THREE.DodecahedronGeometry(r,0):i%3===1?new THREE.BoxGeometry(r*1.8,r*.5,r):new THREE.TetrahedronGeometry(r,0);const o=mesh(geo,rubbleMats[i%rubbleMats.length],x,terrainBaseHeight(x,z)+r*.22,z,rand(.75,1.7),rand(.45,1.05),rand(.75,1.7));o.rotation.set(rand(-.3,.3),rand(0,TAU),rand(-.3,.3));o.receiveShadow=true;if(r>.98)solids.push({x,z,hx:r*.7,hz:r*.7})}
@@ -73,7 +73,46 @@ function createWreckedAPC(x,z,rot=0){const g=new THREE.Group();g.position.set(x,
 function createSandbagLine(x,z,rot=0,count=8){const g=new THREE.Group();g.position.set(x,terrainBaseHeight(x,z),z);g.rotation.y=rot;world.add(g);const bagMat=new THREE.MeshStandardMaterial({color:'#77715a',roughness:1}),seamMat=new THREE.MeshStandardMaterial({color:'#494b40',roughness:1});for(let i=0;i<count;i++){const row=Math.floor(i/4),col=i%4;const bag=new THREE.Mesh(new THREE.SphereGeometry(.42,8,6),bagMat);bag.scale.set(1.28,.58,.72);bag.position.set((col-1.5)*.83,.38+row*.42+(col%2)*.05,0);g.add(bag);const seam=new THREE.Mesh(new THREE.BoxGeometry(.48,.025,.018),seamMat);seam.position.set((col-1.5)*.83,.52+row*.42,.29);g.add(seam)}solids.push({x,z,hx:2.1,hz:.75});return g}
 function createCzechHedgehog(x,z,rot=0){const g=new THREE.Group();g.position.set(x,terrainBaseHeight(x,z)+.08,z);g.rotation.y=rot;world.add(g);const beamMat=new THREE.MeshStandardMaterial({color:'#454943',metalness:.72,roughness:.75});for(let i=0;i<3;i++){const beam=new THREE.Mesh(new THREE.BoxGeometry(.2,.2,3.1),beamMat);beam.position.y=.72;beam.rotation.y=i*Math.PI/3;beam.rotation.x=(i%2?.62:-.62);g.add(beam)}return g}
 function createBrokenLamp(x,z,rot=0){const g=new THREE.Group();g.position.set(x,terrainBaseHeight(x,z),z);g.rotation.y=rot;world.add(g);const pole=new THREE.Mesh(new THREE.CylinderGeometry(.075,.12,3.5,7),mats.dark);pole.position.set(.25,1.55,0);pole.rotation.z=.62;g.add(pole);const arm=new THREE.Mesh(new THREE.BoxGeometry(1.1,.09,.09),mats.rust);arm.position.set(.95,2.5,0);arm.rotation.z=-.25;g.add(arm);const lamp=new THREE.Mesh(new THREE.BoxGeometry(.38,.16,.25),mats.dark);lamp.position.set(1.35,2.4,0);lamp.rotation.z=.15;g.add(lamp);return g}
+function createWreckedJeep(x,z,rot=0){
+ const g=new THREE.Group();g.position.set(x,terrainBaseHeight(x,z),z);g.rotation.y=rot;world.add(g);
+ const olive=new THREE.MeshStandardMaterial({color:'#41483b',roughness:.94,metalness:.18}),burnt=new THREE.MeshStandardMaterial({color:'#252a27',roughness:.98,metalness:.24}),glass=new THREE.MeshStandardMaterial({color:'#182321',roughness:.34,metalness:.18}),rubber=new THREE.MeshStandardMaterial({color:'#171a18',roughness:1}),rim=new THREE.MeshStandardMaterial({color:'#77786e',roughness:.72,metalness:.55});
+ const chassis=new THREE.Mesh(new THREE.BoxGeometry(2.25,.42,4.1),burnt);chassis.position.y=.62;g.add(chassis);
+ const hood=new THREE.Mesh(new THREE.BoxGeometry(2.05,.62,1.18),olive);hood.position.set(0,.98,-1.25);hood.rotation.z=-.09;g.add(hood);
+ const cabin=new THREE.Mesh(new THREE.BoxGeometry(1.9,1.05,1.65),olive);cabin.position.set(0,1.37,.35);cabin.rotation.z=.08;g.add(cabin);
+ const roof=new THREE.Mesh(new THREE.BoxGeometry(1.95,.12,1.55),burnt);roof.position.set(-.08,1.96,.38);roof.rotation.z=.08;g.add(roof);
+ const wind=new THREE.Mesh(new THREE.BoxGeometry(1.68,.48,.045),glass);wind.position.set(0,1.57,-.48);wind.rotation.x=-.2;g.add(wind);
+ const grille=new THREE.Mesh(new THREE.BoxGeometry(.92,.34,.08),burnt);grille.position.set(0,.91,-1.88);g.add(grille);
+ for(let i=0;i<6;i++){const slat=new THREE.Mesh(new THREE.BoxGeometry(.055,.28,.095),rim);slat.position.set((i-2.5)*.14,.91,-1.94);g.add(slat)}
+ for(const side of [-1,1]){for(const zz of [-1.25,1.25]){const tire=new THREE.Mesh(new THREE.CylinderGeometry(.48,.48,.28,12),rubber);tire.rotation.z=Math.PI/2;tire.position.set(side*1.13,.48,zz);g.add(tire);const hub=new THREE.Mesh(new THREE.CylinderGeometry(.2,.2,.3,10),rim);hub.rotation.z=Math.PI/2;hub.position.set(side*1.15,.48,zz);g.add(hub)}const door=new THREE.Mesh(new THREE.BoxGeometry(.06,.72,.82),side===1?burnt:olive);door.position.set(side*1.01,1.19,.4);door.rotation.z=side===1?-.38:.06;g.add(door)}
+ const bentBar=new THREE.Mesh(new THREE.CylinderGeometry(.045,.055,1.35,6),mats.rust);bentBar.position.set(-.88,1.82,.8);bentBar.rotation.z=.72;g.add(bentBar);
+ const scorch=new THREE.Mesh(new THREE.CircleGeometry(3.5,12),new THREE.MeshStandardMaterial({color:'#20221f',roughness:1,transparent:true,opacity:.58}));scorch.rotation.x=-Math.PI/2;scorch.position.y=.025;g.add(scorch);
+ g.traverse(o=>{if(o.isMesh){o.castShadow=false;o.receiveShadow=true}});solids.push({x,z,hx:1.65,hz:2.25});return g
+}
+function createConcreteBarrier(x,z,rot=0){
+ const g=new THREE.Group();g.position.set(x,terrainBaseHeight(x,z),z);g.rotation.y=rot;world.add(g);
+ const concrete=new THREE.MeshStandardMaterial({color:'#666a63',roughness:1}),edge=new THREE.MeshStandardMaterial({color:'#424640',roughness:.98}),paint=new THREE.MeshStandardMaterial({color:'#b3a36b',roughness:.85});
+ const base=new THREE.Mesh(new THREE.BoxGeometry(3.6,.28,.72),edge);base.position.y=.14;g.add(base);
+ const body=new THREE.Mesh(new THREE.BoxGeometry(3.25,.72,.58),concrete);body.position.y=.58;g.add(body);
+ const cap=new THREE.Mesh(new THREE.BoxGeometry(2.35,.22,.48),concrete);cap.position.y=1.05;g.add(cap);
+ for(let i=0;i<4;i++){const stripe=new THREE.Mesh(new THREE.BoxGeometry(.38,.035,.605),paint);stripe.position.set(-1.22+i*.82,.62,0);stripe.rotation.z=-.22;g.add(stripe)}
+ const chip=new THREE.Mesh(new THREE.DodecahedronGeometry(.32,0),edge);chip.position.set(1.18,.88,.16);chip.scale.set(1.5,.65,.6);g.add(chip);
+ g.traverse(o=>{if(o.isMesh){o.castShadow=false;o.receiveShadow=true}});solids.push({x,z,hx:2.0,hz:.65});return g
+}
+function createAmmoCrate(x,z,rot=0){
+ const g=new THREE.Group();g.position.set(x,terrainBaseHeight(x,z),z);g.rotation.y=rot;world.add(g);
+ const wood=new THREE.MeshStandardMaterial({color:'#554a35',roughness:1}),band=new THREE.MeshStandardMaterial({color:'#343a35',roughness:.78,metalness:.5}),stencil=new THREE.MeshStandardMaterial({color:'#c0b78b',roughness:1});
+ const body=new THREE.Mesh(new THREE.BoxGeometry(.95,.72,.78),wood);body.position.y=.39;g.add(body);
+ for(const xx of [-.31,0,.31]){const plank=new THREE.Mesh(new THREE.BoxGeometry(.018,.66,.79),band);plank.position.set(xx,.4,.01);g.add(plank)}
+ for(const yy of [.16,.62]){const strip=new THREE.Mesh(new THREE.BoxGeometry(.99,.055,.82),band);strip.position.y=yy;g.add(strip)}
+ const mark=new THREE.Mesh(new THREE.BoxGeometry(.26,.13,.012),stencil);mark.position.set(0,.45,.402);g.add(mark);
+ g.traverse(o=>{if(o.isMesh){o.castShadow=false;o.receiveShadow=true}});return g
+}
+
 createWreckedAPC(-18,-28,.8);createWreckedAPC(42,14,-1.1);createWreckedAPC(-62,48,.2);
+// Original handmade meshes: damaged utility vehicles, concrete roadblocks and field supply crates.
+createWreckedJeep(-43,-15,-.3);createWreckedJeep(61,-37,1.1);
+for(const p of [[-35,-58,.2],[37,-25,1.6],[79,9,-.7],[-82,5,2.4],[18,47,.3],[94,-48,1.1],[ -5,94,.2],[-106,-62,-.6]])createConcreteBarrier(p[0],p[1],p[2]);
+for(const p of [[-12,-22,.3],[7,-32,1.4],[46,18,.5],[-53,41,-.8],[67,48,2.1],[ -78,-25,.7],[23,79,-.4],[102,22,1.3]])createAmmoCrate(p[0],p[1],p[2]);
 for(const p of [[-8,-16,.4],[12,-44,1.4],[53,4,-.3],[-38,26,2.2],[72,35,.5],[-74,-12,-.6]])createSandbagLine(p[0],p[1],p[2],8);
 for(const p of [[-15,-10,.5],[18,-28,1.2],[34,35,.2],[-42,-38,2],[65,-15,.8],[-88,24,-.4],[90,48,1.5],[3,66,.9]])createCzechHedgehog(p[0],p[1],p[2]);
 for(const p of [[-22,-8,.2],[32,-52,1.1],[58,28,-.5],[-58,34,2.1],[12,72,.7],[-92,-35,1.8]])createBrokenLamp(p[0],p[1],p[2]);

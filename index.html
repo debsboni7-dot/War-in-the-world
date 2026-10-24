@@ -34,7 +34,7 @@
   });
 })();
 </script>
-<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}</script>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
 <script>
 window.__witwBootError=function(message){
  var l=document.getElementById('loading'),m=document.getElementById('loadmsg');
@@ -46,11 +46,28 @@ window.__witwBootError=function(message){
 window.addEventListener('error',function(e){if(e&&e.message)window.__witwBootError(e.message);},true);
 window.addEventListener('unhandledrejection',function(e){window.__witwBootError(e&&e.reason&&(e.reason.message||e.reason)||'échec de chargement');});
 </script>
+<script>
+window.__witwBootError=function(message){
+ const box=document.getElementById('loading'); if(!box)return;
+ box.style.display='grid'; box.style.zIndex='999'; box.innerHTML='';
+ const title=document.createElement('strong'); title.textContent='WAR IN THE WORLD — démarrage bloqué';
+ const detail=document.createElement('span'); detail.textContent=message+' . Vérifie la connexion, puis recharge. Si tu es dans un navigateur intégré, ouvre la page dans Chrome.';
+ const retry=document.createElement('button'); retry.textContent='RÉESSAYER'; retry.style.marginTop='18px'; retry.onclick=()=>location.reload();
+ box.append(title,detail,retry);
+};
+window.addEventListener('error',function(e){
+ if(!window.__witwBooted && e.message && /module|three|webgl|import|script/i.test(e.message))
+   window.__witwBootError('Erreur JavaScript : '+e.message);
+});
+window.addEventListener('unhandledrejection',function(e){
+ if(!window.__witwBooted) window.__witwBootError('Une ressource 3D n’a pas pu être chargée.');
+});
+</script>
 <script type="module">
-import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
-import {GLTFLoader} from 'https://unpkg.com/three@0.160.0/examples/jsm/loaders/GLTFLoader.js';
-import {OBJLoader} from 'https://unpkg.com/three@0.160.0/examples/jsm/loaders/OBJLoader.js';
-import * as SkeletonUtils from 'https://unpkg.com/three@0.160.0/examples/jsm/utils/SkeletonUtils.js';
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+import {GLTFLoader} from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js';
+import {OBJLoader} from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/OBJLoader.js';
+import * as SkeletonUtils from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/utils/SkeletonUtils.js';
 const $=id=>document.getElementById(id),clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),rand=(a,b)=>a+Math.random()*(b-a),V=(x=0,y=0,z=0)=>new THREE.Vector3(x,y,z),TAU=Math.PI*2;
 const coarse=matchMedia('(pointer:coarse)').matches;
 let cfg={quality:'high',sensitivity:1};try{Object.assign(cfg,JSON.parse(localStorage.getItem('witw-config')||'{}'))}catch{}
@@ -414,7 +431,7 @@ function updateCamera(dt){
 }
 function updateSmoke(dt){for(const s of smokes){s.life-=dt;if(s.life<=0){s.life=rand(3,7);s.mesh.position.set(rand(-.6,.6),rand(0,2),rand(-.6,.6));s.mesh.scale.setScalar(rand(.6,1.7));}s.mesh.position.y+=dt*.28;s.mesh.material.opacity=Math.max(0,Math.min(.3,s.life/s.max*.3))}}
 function frame(now){requestAnimationFrame(frame);const dt=clamp((now-last)/1000,.001,.04);last=now;if(state==='playing'){elapsed+=dt;zoneR=Math.max(9,100-Math.max(0,elapsed-30)*.55);updatePlayer(dt);if(!falling)updateBots(dt);if(elapsed>30&&Math.hypot(player.pos.x,player.pos.z)>zoneR)damagePlayer(dt*(elapsed>150?7:3));if(bots.every(b=>b.dead))finish(true);if(elapsed>180){for(const b of bots)if(!b.dead)b.hp-=dt*3;if(bots.every(b=>b.dead))finish(true)}updateCamera(dt);setHUD();drawMap();toastLeft-=dt;if(toastLeft<=0)$('toast').style.opacity=0}else if(state==='lobby'){const t=now*.00025;camera.position.set(Math.sin(t)*6,3,12);camera.lookAt(0,1,0);if(player.model)player.model.root.visible=false;if(helicopter){helicopter.visible=true;helicopter.position.set(Math.sin(t)*4,4,0);helicopter.rotation.y=t}}for(const t of tracers){t.life-=dt;t.line.material.opacity=Math.max(0,t.life/.08);if(t.life<=0){scene.remove(t.line)}}for(let i=tracers.length-1;i>=0;i--)if(tracers[i].life<=0)tracers.splice(i,1);updateSmoke(dt);renderer.render(scene,camera)}
-function init(){if(!helicopter)helicopter=makeHelicopter();if(player.model)scene.remove(player.model.root);player.model=makeSoldier();player.model.root.visible=false;applyQuality();resize();$('loading').classList.add('hidden');requestAnimationFrame(frame)}
+function init(){if(!helicopter)helicopter=makeHelicopter();if(player.model)scene.remove(player.model.root);player.model=makeSoldier();player.model.root.visible=false;applyQuality();resize();window.__witwBooted=true;$('loading').classList.add('hidden');requestAnimationFrame(frame)}
 init();
 </script><script>
 // Prevent a silent infinite spinner if the browser cannot download Three.js or its module dependencies.

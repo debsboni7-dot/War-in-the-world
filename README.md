@@ -44,3 +44,11 @@ Avant une mise en production, il faut un backend et une base de données, une au
 Une vérification de signature uniquement dans le navigateur peut être contournée. Les shaders doivent être des packs officiels validés ou des préréglages contrôlés; ne jamais exécuter du code de shader arbitraire envoyé par un joueur. Les fichiers doivent être analysés, limités en taille et en formats, et les contenus de créateurs doivent être examinés avant publication.
 
 La licence « un téléchargement » est stricte : elle peut bloquer l'accès si le téléchargement échoue ou si le joueur change d'appareil. Il faut prévoir un avertissement avant confirmation et une procédure de récupération manuelle après vérification, sans prétendre empêcher à 100 % la copie des fichiers.
+
+
+## Crédits des ressources 3D externes
+
+- Soldat riggé chargé depuis le dépôt public [cktang88/3d-fps](https://github.com/cktang88/3d-fps), modèle source « FREE [Military Soldier] RIGGED » par BAMEN, licence CC BY 4.0. Source du modèle : https://sketchfab.com/3d-models/free-military-soldier-rigged-e9c56308a67d4a3db62e914fafa4d198. Les conditions de la licence demandent de conserver l’attribution.
+- Animations de référence indiquées par le projet source : Quaternius Universal Animation Library, CC0.
+
+Le modèle est chargé à distance depuis GitHub. Il ne fait pas partie des fichiers binaires stockés dans ce dépôt; il faut une connexion Internet pour le récupérer. Si la source devient indisponible, le jeu garde son soldat de secours local.

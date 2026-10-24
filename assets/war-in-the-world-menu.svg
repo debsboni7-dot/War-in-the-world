@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+<defs>
+ <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#182d3a"/><stop offset=".5" stop-color="#b66b45"/><stop offset="1" stop-color="#171c1b"/></linearGradient>
+ <linearGradient id="fade"><stop stop-color="#050b0bf2"/><stop offset=".55" stop-color="#07100dd9"/><stop offset="1" stop-color="#07100d38"/></linearGradient>
+ <linearGradient id="sun"><stop stop-color="#ffd59a"/><stop offset="1" stop-color="#e16b36" stop-opacity="0"/></linearGradient>
+</defs>
+<rect width="1600" height="900" fill="url(#sky)"/>
+<circle cx="1190" cy="320" r="180" fill="url(#sun)" opacity=".8"/>
+<path d="M0 480 180 340 290 420 450 300 590 430 760 330 900 450 1080 300 1250 420 1410 315 1600 440V900H0Z" fill="#303b36"/>
+<path d="M0 560 180 470 330 535 520 440 700 550 890 470 1080 570 1270 455 1450 535 1600 470V900H0Z" fill="#202a25"/>
+<g fill="#111917"><path d="M0 650V520h80v130h35V555h65v95h65V505h82v145h50V570h100v80h65V520h70v130h70V575h90v75h65V510h100v140h65V565h90v85h50V520h100v130h65V570h95v80h90V540h90v110h50v250H0Z"/></g>
+<g fill="#e8a76c" opacity=".8"><path d="M85 550h12v20H85zM211 576h13v24h-13zM322 535h16v22h-16zM462 588h13v18h-13zM640 548h14v20h-14zM811 592h12v20h-12zM1028 550h14v21h-14zM1205 585h13v18h-13zM1390 550h15v22h-15zM1510 590h12v19h-12z"/></g>
+<path d="M0 760 280 690 540 740 820 670 1090 740 1360 680 1600 730V900H0Z" fill="#111816"/>
+<g transform="translate(1090 360)" fill="#0a1110" stroke="#0a1110" stroke-linejoin="round">
+ <path d="M-65 70 0 15 65 70 50 85H-50Z"/><rect x="-43" y="82" width="86" height="135" rx="3"/><path d="M-58 217 58 217 78 255H-78Z"/>
+ <rect x="-18" y="-7" width="36" height="25"/><path d="M-4 -38h8l15 31H-19Z"/>
+</g>
+<g transform="translate(1320 180)" fill="#111715"><path d="M-100 0H35l60 13-8 9-85-5-44 14-40-2-28 14-8-5 18-22-35-8 3-8 36 4Z"/><path d="M-26 0-6-34 5-32 3 2M-55 3l-8-27 8-3 15 28" stroke="#111715" stroke-width="8" fill="none"/><path d="M-6 6v-22M-80 8v-16" stroke="#111715" stroke-width="4"/></g>
+<g transform="translate(360 420)" fill="#070c0b" stroke="#070c0b" stroke-linejoin="round">
+ <path d="M-42 110 5 62 54 112 43 133H-32Z"/><path d="M-32 132H42L58 265H-46Z"/><path d="M-35 145-92 222-78 237-10 178M38 145 90 211 75 228 17 179" fill="#101614" stroke-width="18"/><path d="M-28 260-40 385-13 388 7 285 26 388 54 385 35 260" fill="#080d0c"/><path d="M-10 83 3 54 17 84 9 101Z" fill="#252f2b"/><path d="M-20 145 50 157 48 183-17 174Z" fill="#293630"/><path d="M5 174 105 190 102 200 8 190Z" fill="#141b18" stroke-width="5"/>
+ <path d="M95 185l80 8-1 7-80-7z" fill="#242d28"/><path d="M164 188l18 2-2 8-18-2z" fill="#242d28"/>
+</g>
+<rect width="1600" height="900" fill="url(#fade)"/>
+<text x="70" y="120" font-family="Arial,sans-serif" font-size="24" letter-spacing="10" fill="#d8e79a">DROP ZONE • SURVIE MILITAIRE</text>
+<text x="64" y="235" font-family="Arial,sans-serif" font-weight="900" font-size="104" letter-spacing="-5" fill="#f3f4ed">WAR IN</text>
+<text x="64" y="330" font-family="Arial,sans-serif" font-weight="900" font-size="104" letter-spacing="-5" fill="#f3f4ed">THE WORLD</text>
+<path d="M68 365H380" stroke="#d8e79a" stroke-width="5"/>
+<text x="70" y="415" font-family="Arial,sans-serif" font-size="26" letter-spacing="3" fill="#d3dbd5">SURVIVE • FIGHT • WIN</text>
+</svg>

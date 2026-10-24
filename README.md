@@ -17,8 +17,8 @@ Le jeu démarre dans `index.html`. Pour publier : **Settings → Pages → Deplo
 
 ## Modèles 3D externes
 
-- Armes 3D externes : packs de fusils, pistolets, SMG, fusil à pompe et sniper du dépôt [petroulacl/fps-asset-kit](https://github.com/petroulacl/fps-asset-kit), annoncé CC0/public domain. Le jeu garde ses modèles procéduraux en secours si le téléchargement échoue.
-- Décors de guerre : modèles `SM_Rubble_Pile.glb`, `SM_Debris_Scatter.glb` et `SM_Wall_Damaged_4m.glb` du dépôt [JaronKBragg7337/asset-pack-ue-threejs-blender-unity](https://github.com/JaronKBragg7337/asset-pack-ue-threejs-blender-unity), annoncés CC0. Des morceaux de murs, des pierres et des poutres sont aussi générés directement par le jeu.
+- Dix modèles d'armes 3D externes : deux pistolets, deux fusils, deux SMG, deux fusils à pompe et deux fusils de précision du dépôt [petroulacl/fps-asset-kit](https://github.com/petroulacl/fps-asset-kit), annoncé CC0/public domain. Les armes sont affectées par catégorie au butin; les modèles procéduraux restent en secours si un téléchargement échoue.
+- Décors de guerre externes : `SM_Rubble_Pile.glb`, `SM_Debris_Scatter.glb` et `SM_Wall_Damaged_4m.glb` du dépôt [JaronKBragg7337/asset-pack-ue-threejs-blender-unity](https://github.com/JaronKBragg7337/asset-pack-ue-threejs-blender-unity), annoncés CC0. Modèles faits à la main dans Three.js : véhicule blindé détruit, sacs de sable, obstacles antichars, lampadaires cassés, murs effondrés, poutres, pierres et cratères. Les arbres ont été retirés pour garder un paysage de guerre nu.
 - Soldats ennemis faits à la main dans Three.js : dix variantes géométriques distinctes avec différences de casque, silhouette, sac, plaques, masque, antenne, pochettes et équipement. Elles sont générées directement dans le code, sans télécharger de personnage lourd. Le soldat externe animé reste réservé au joueur. Ce ne sont pas dix fichiers GLB exportés depuis Blender, mais dix modèles procéduraux construits dans le jeu.
 - Soldat animé de secours : modèle d'exemple Three.js `Soldier.glb` (`https://threejs.org/examples/models/gltf/Soldier.glb`).
 - Hélicoptère : modèle GLB Light Helicopter d'Innerscene, dédié CC0 (`https://www.innerscene.com/tools/library/3d-parts/light-helicopter-eab26245`).
@@ -28,7 +28,7 @@ Ces modèles sont chargés depuis Internet au lancement : une connexion est néc
 
 ## Limites connues
 
-Ceci est une première version jouable, pas un jeu AAA : les 50 armes ont des statistiques et des noms distincts, mais leurs modèles visuels ne sont pas encore 50 modèles d'armes uniques. Les bots, tirs, impacts et animations sont des systèmes de prototype. Le jeu ne possède pas encore de multijoueur en ligne, de parachute animé détaillé, ni de système de progression persistant.
+Ceci est une première version jouable, pas un jeu AAA : les 50 armes ont des statistiques et des noms distincts, avec dix modèles externes réutilisés par catégories et des modèles procéduraux de secours, pas 50 modèles visuels uniques. Les soldats ennemis ont dix silhouettes procédurales distinctes; le kit Sketchfab Military Character Kit 1.1 n'est pas encore importé en tant que fichier binaire. Les bots, tirs, impacts et animations sont des systèmes de prototype. Le jeu ne possède pas encore de multijoueur en ligne, de parachute animé détaillé, ni de système de progression persistant.
 
 ## Boutique officielle (prototype)
 

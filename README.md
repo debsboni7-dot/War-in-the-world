@@ -26,3 +26,21 @@ Ces modèles sont chargés depuis Internet au lancement : une connexion est néc
 ## Limites connues
 
 Ceci est une première version jouable, pas un jeu AAA : les 50 armes ont des statistiques et des noms distincts, mais leurs modèles visuels ne sont pas encore 50 modèles d'armes uniques. Les bots, tirs, impacts et animations sont des systèmes de prototype. Le jeu ne possède pas encore de multijoueur en ligne, de parachute animé détaillé, ni de système de progression persistant.
+
+## Boutique officielle (prototype)
+
+- Page catalogue : `market.html` — publiée sur GitHub Pages à l'adresse `/market.html`.
+- Le menu **Paramètres** du jeu contient un lien vers la boutique.
+- Catégories prévues : armes, soldats, vêtements, équipements, shaders officiels, animations, sons, véhicules et propositions de créateurs.
+- Les fiches de démonstration affichent une image conceptuelle, une description, un prix indicatif en FCFA, une taille de fichier indicative, un format prévu, la compatibilité, l'effet envisagé en jeu et la licence prévue.
+- La recherche, les filtres de catégories, le tri, les fiches détaillées et les paramètres sont interactifs.
+
+### Limites de sécurité et de paiement
+
+**La boutique est une maquette, pas encore une boutique transactionnelle.** Les prix et tailles affichés sont des exemples; aucun paquet réel n'est proposé au téléchargement. Les boutons d'achat et de téléchargement restent désactivés. Aucun paiement n'est encaissé.
+
+Avant une mise en production, il faut un backend et une base de données, une authentification, un prestataire compatible Mobile Money et cartes en Côte d'Ivoire, des webhooks de paiement vérifiés côté serveur, un processus de remboursement et de support, un système de signatures cryptographiques et des liens de téléchargement temporaires à usage unique. Les secrets ne doivent jamais être intégrés au JavaScript public.
+
+Une vérification de signature uniquement dans le navigateur peut être contournée. Les shaders doivent être des packs officiels validés ou des préréglages contrôlés; ne jamais exécuter du code de shader arbitraire envoyé par un joueur. Les fichiers doivent être analysés, limités en taille et en formats, et les contenus de créateurs doivent être examinés avant publication.
+
+La licence « un téléchargement » est stricte : elle peut bloquer l'accès si le téléchargement échoue ou si le joueur change d'appareil. Il faut prévoir un avertissement avant confirmation et une procédure de récupération manuelle après vérification, sans prétendre empêcher à 100 % la copie des fichiers.

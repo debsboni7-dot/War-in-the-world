@@ -59,7 +59,23 @@ const weaponTextureMaterials=surfaceTextureSpecs.map(v=>new THREE.MeshStandardMa
 
 function terrainBaseHeight(x,z){return -.25+Math.sin(x*.08)*.8+Math.cos(z*.065)*.65+Math.sin((x-z)*.027)*1.4+Math.sin(x*.22-z*.13)*.22}
 const terrainGeo=new THREE.PlaneGeometry(420,420,110,110);const pos=terrainGeo.attributes.position;for(let i=0;i<pos.count;i++){const x=pos.getX(i),y=pos.getY(i);pos.setZ(i,terrainBaseHeight(x,-y)+.25)}terrainGeo.computeVertexNormals();const terrainMat=new THREE.MeshStandardMaterial({map:surfaceTextures['gravier'],roughness:1,color:'#77766d'});const terrain=new THREE.Mesh(terrainGeo,terrainMat);terrain.rotation.x=-Math.PI/2;terrain.position.y=-.25;terrain.receiveShadow=true;world.add(terrain);
-// Optional external photographic ground texture. The locally generated battlefield texture remains the fallback if the network or source is unavailable.
+// Real scanned PBR texture sets from Poly Haven (CC0). If a remote file fails, the local procedural texture remains in place.
+const pbrLoader=new THREE.TextureLoader();
+function loadExternalPBR(material,slug,repeatX=1,repeatY=1){
+ const root='https://dl.polyhaven.org/file/ph-assets/Textures/jpg/4k/'+slug+'/'+slug;
+ const configure=(t,isColor=false)=>{t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(repeatX,repeatY);t.anisotropy=renderer.capabilities.getMaxAnisotropy();if(isColor)t.colorSpace=THREE.SRGBColorSpace;return t};
+ pbrLoader.load(root+'_diff_4k.jpg',t=>{material.map=configure(t,true);material.needsUpdate=true},undefined,()=>{});
+ pbrLoader.load(root+'_nor_gl_4k.jpg',t=>{material.normalMap=configure(t);material.normalScale.set(1,1);material.needsUpdate=true},undefined,()=>{});
+ pbrLoader.load(root+'_rough_4k.jpg',t=>{material.roughnessMap=configure(t);material.needsUpdate=true},undefined,()=>{});
+}
+loadExternalPBR(mats.soil,'ground_037',12,12);
+loadExternalPBR(mats.concrete,'concrete',3,3);
+loadExternalPBR(mats.metal,'rusty_painted_metal',2,2);
+loadExternalPBR(mats.green,'fabric_pattern_07',2,2);
+loadExternalPBR(mats.dark,'rusty_painted_metal',2,2);
+loadExternalPBR(terrainMat,'ground_037',18,18);
+loadExternalPBR(roadMat,'asphalt_03',8,24);
+// Battlefield vegetation remains intentionally absent. PBR sources: Poly Haven, CC0 license.
 // Terrain visible uniquement en terre, gravier et roche : aucune herbe ni végétation n'est placée.
 // Roads, craters and wrecked battlefield props
 const roadMat=new THREE.MeshStandardMaterial({map:surfaceTextures['asphalte'],color:'#b0b0a8',roughness:.98});const roadGeo=new THREE.PlaneGeometry(15,340,12,136);const roadPos=roadGeo.attributes.position;for(let i=0;i<roadPos.count;i++){const x=roadPos.getX(i),z=-roadPos.getY(i);roadPos.setZ(i,(Math.abs(x)<7.35&&z>-97.5&&z<-78.5)?-.04:terrainBaseHeight(x,z)+.035)}roadGeo.computeVertexNormals();const road=new THREE.Mesh(roadGeo,roadMat);road.rotation.x=-Math.PI/2;road.receiveShadow=true;world.add(road);

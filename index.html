@@ -44,11 +44,11 @@ const surfaceTextureSpecs=[
 ];
 const surfaceTextures={};
 function makeSurfaceTexture(name,base,light,seed){
- const c=document.createElement('canvas');c.width=c.height=256;const q=c.getContext('2d');q.fillStyle=base;q.fillRect(0,0,256,256);
+ const c=document.createElement('canvas');c.width=c.height=512;const q=c.getContext('2d');q.fillStyle=base;q.fillRect(0,0,256,256);
  let n=seed*7919;const rnd=()=>{n=(n*16807)%2147483647;return (n-1)/2147483646};
- for(let i=0;i<5200;i++){q.globalAlpha=.08+rnd()*.28;q.fillStyle=rnd()>.48?light:'#101410';q.fillRect(rnd()*256,rnd()*256,1+rnd()*5,1+rnd()*4)}
+ for(let i=0;i<14000;i++){q.globalAlpha=.08+rnd()*.28;q.fillStyle=rnd()>.48?light:'#101410';q.fillRect(rnd()*256,rnd()*256,1+rnd()*5,1+rnd()*4)}
  if(/acier|métal|asphalte|marquage/.test(name)){q.globalAlpha=.16;q.strokeStyle=light;q.lineWidth=1;for(let i=0;i<32;i++){q.beginPath();q.moveTo(0,rnd()*256);q.lineTo(256,rnd()*256);q.stroke()}}
- if(/camouflage|tissu|feuillage|herbe/.test(name)){for(let i=0;i<85;i++){q.globalAlpha=.2+rnd()*.25;q.fillStyle=rnd()>.5?light:'#252f25';q.beginPath();q.ellipse(rnd()*256,rnd()*256,3+rnd()*13,2+rnd()*7,rnd()*3,0,TAU);q.fill()}}
+ if(/camouflage|tissu|feuillage|herbe/.test(name)){for(let i=0;i<170;i++){q.globalAlpha=.2+rnd()*.25;q.fillStyle=rnd()>.5?light:'#252f25';q.beginPath();q.ellipse(rnd()*256,rnd()*256,3+rnd()*13,2+rnd()*7,rnd()*3,0,TAU);q.fill()}}
  q.globalAlpha=1;const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());t.name=name;return t;
 }
 surfaceTextureSpecs.forEach((v,i)=>surfaceTextures[v[0]]=makeSurfaceTexture(v[0],v[1],v[2],i+1));

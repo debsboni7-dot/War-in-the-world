@@ -1,0 +1,35 @@
+name: Generate infantry GLB batch
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "tools/generate_soldier_batch.py"
+      - ".github/workflows/generate-soldiers.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Install Blender
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender
+      - name: Generate 10 prototype soldier models
+        run: blender --background --python tools/generate_soldier_batch.py
+      - name: Commit generated GLB files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/assets/models/soldiers/*.glb
+          if git diff --cached --quiet; then
+            echo "No generated model changes."
+          else
+            git commit -m "Generate infantry prototype GLB batch 01"
+            git push
+          fi

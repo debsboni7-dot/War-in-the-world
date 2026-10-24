@@ -71,7 +71,10 @@ function loadExternalPBR(material,slug,repeatX=1,repeatY=1){
 loadExternalPBR(mats.soil,'brown_mud_leaves_01',12,12);
 loadExternalPBR(mats.concrete,'concrete',3,3);
 loadExternalPBR(mats.metal,'rusty_painted_metal',2,2);
-loadExternalPBR(mats.green,'fabric_pattern_07',2,2);
+// Uniforms use an actual photographed military camouflage cloth rather than a decorative plaid fabric.
+// Photographic military camouflage cloth (PxHere CC0, original 4000x6000). If it fails, keep the existing local olive fabric texture.
+pbrLoader.load('https://c.pxhere.com/photos/16/a2/camouflage_pattern_military_textile_material_uniform_fabric_khaki-1007538.jpg!d',t=>{t.colorSpace=THREE.SRGBColorSpace;t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(1,1);t.anisotropy=renderer.capabilities.getMaxAnisotropy();mats.green.map=t;mats.green.color.set('#ffffff');mats.green.needsUpdate=true},undefined,()=>{});
+
 loadExternalPBR(mats.dark,'rusty_painted_metal',2,2);
 loadExternalPBR(terrainMat,'brown_mud_leaves_01',18,18);
 loadExternalPBR(roadMat,'asphalt_03',8,24);

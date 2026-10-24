@@ -35,11 +35,22 @@
 })();
 </script>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
+<script>
+window.__witwBootError=function(message){
+ var l=document.getElementById('loading'),m=document.getElementById('loadmsg');
+ if(!l||l.classList.contains('hidden'))return;
+ if(m)m.textContent='Erreur de démarrage 3D : '+String(message||'module impossible à charger').slice(0,140)+'. Recharge la page ou ouvre-la dans Chrome.';
+ var a=document.getElementById('openChrome');
+ if(!a){a=document.createElement('a');a.id='openChrome';a.href='intent://debsboni7-dot.github.io/War-in-the-world/?v=3#Intent;scheme=https;package=com.android.chrome;end';a.textContent='OUVRIR DANS CHROME';a.style.cssText='display:inline-block;margin:18px auto 0;padding:13px 18px;border-radius:10px;background:#d8e79a;color:#101710;font:800 13px system-ui;text-decoration:none';l.appendChild(a)}
+};
+window.addEventListener('error',function(e){if(e&&e.message)window.__witwBootError(e.message);},true);
+window.addEventListener('unhandledrejection',function(e){window.__witwBootError(e&&e.reason&&(e.reason.message||e.reason)||'échec de chargement');});
+</script>
 <script type="module">
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
-import {GLTFLoader} from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js';
-import {OBJLoader} from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/OBJLoader.js';
-import * as SkeletonUtils from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/utils/SkeletonUtils.js';
+import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
+import {GLTFLoader} from 'https://unpkg.com/three@0.160.0/examples/jsm/loaders/GLTFLoader.js';
+import {OBJLoader} from 'https://unpkg.com/three@0.160.0/examples/jsm/loaders/OBJLoader.js';
+import * as SkeletonUtils from 'https://unpkg.com/three@0.160.0/examples/jsm/utils/SkeletonUtils.js';
 const $=id=>document.getElementById(id),clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),rand=(a,b)=>a+Math.random()*(b-a),V=(x=0,y=0,z=0)=>new THREE.Vector3(x,y,z),TAU=Math.PI*2;
 const coarse=matchMedia('(pointer:coarse)').matches;
 let cfg={quality:'high',sensitivity:1};try{Object.assign(cfg,JSON.parse(localStorage.getItem('witw-config')||'{}'))}catch{}
@@ -407,5 +418,5 @@ function init(){if(!helicopter)helicopter=makeHelicopter();if(player.model)scene
 init();
 </script><script>
 // Prevent a silent infinite spinner if the browser cannot download Three.js or its module dependencies.
-setTimeout(()=>{const l=document.getElementById('loading');if(l&&!l.classList.contains('hidden')){const m=document.getElementById('loadmsg');if(m)m.textContent='Le démarrage est bloqué : le navigateur intégré ne charge peut-être pas les modules 3D ou WebGL. Ouvre le jeu dans Chrome, vérifie Internet, puis recharge la page.';if(!document.getElementById('openChrome')){var a=document.createElement('a');a.id='openChrome';a.href='intent://debsboni7-dot.github.io/War-in-the-world/#Intent;scheme=https;package=com.android.chrome;end';a.textContent='OUVRIR DANS CHROME';a.style.cssText='display:inline-block;margin:18px auto 0;padding:13px 18px;border-radius:10px;background:#d8e79a;color:#101710;font:800 13px system-ui;text-decoration:none';l.appendChild(a)}}},12000);
+setTimeout(()=>{if(window.__witwBootError)window.__witwBootError('délai dépassé : CDN 3D ou WebGL inaccessible');},12000);
 </script></body></html>

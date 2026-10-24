@@ -8,6 +8,32 @@
 <div id="hud" class="hidden"><div class="top"><div class="chip">SURVIVANTS <b id="alive">12</b></div><div class="chip">ÉLIMS <b id="kills">0</b></div><div class="chip">ZONE <b id="time">03:00</b></div><button id="pause">Ⅱ</button></div><canvas id="minimap" width="128" height="128"></canvas><div class="cross" id="cross"></div><div id="scopeOverlay" aria-hidden="true"><div class="scope-ring"></div><div class="scope-center"></div><div class="scope-label">SNIPER • 8×</div></div><div id="toast"></div><div class="bottom"><div class="healthlabel"><span>SANTÉ</span><span id="hpnum">100</span></div><div class="track"><div class="fill" id="hpfill"></div></div><div class="weapon" id="wname">PISTOLET SERVICE</div><div class="ammo" id="ammo">— <small>/ —</small></div></div><div class="inventory" id="inventory"><button id="slot1">1 · VIDE</button><button id="slot2">2 · VIDE</button></div><div class="stick" id="stick"><div class="knob" id="knob"></div></div><button class="control" id="fire">TIR</button><button class="control" id="aim">VISER</button><button class="control" id="reload">RECH.</button><button class="control" id="jump">SAUT</button><button class="control" id="loot">RAMASSER</button><button class="control" id="swap">ARME</button><button class="control" id="crouch">ACC.</button><button class="control" id="run">SPRINT</button><div id="damage"></div></div>
 <section id="assetsPanel" class="screen modal hidden"><div class="panel"><div class="eyebrow">ARSENAL PERSONNEL</div><h2>Mes fichiers achetés</h2><p>Importe les modèles téléchargés depuis la boutique ou un autre site. Les fichiers restent dans cette session du navigateur : réimporte-les après avoir fermé ou actualisé la page.</p><label for="assetFiles" style="display:block;padding:13px;border:1px dashed #a7c58a;border-radius:10px;background:#17221c;text-align:center;font-weight:800">CHOISIR DES FICHIERS 3D</label><input id="assetFiles" type="file" multiple accept=".glb,.gltf,.obj,.mtl,.bin,.png,.jpg,.jpeg,.webp" style="display:block;width:100%;margin:12px 0;color:#fff"><p class="fine">Formats : GLB (recommandé), GLTF avec ses fichiers associés, OBJ/MTL et textures. Pour GLTF/OBJ, sélectionne aussi les fichiers associés quand nécessaire.</p><div id="assetStatus" class="fine" role="status">Aucun fichier importé.</div><div id="assetList" style="display:grid;gap:8px;margin:12px 0"></div><div class="actions"><button id="assetsClose" class="primary">TERMINER</button><button id="assetsClear">VIDER LA LISTE</button></div></div></section><section id="settings" class="screen modal hidden"><div class="panel"><div class="eyebrow">CONFIGURATION</div><h2>Paramètres</h2><p>Réglages pensés pour Android et les appareils modestes.</p><label>Qualité graphique <select id="quality" style="width:100%;padding:10px;background:#1c2923;color:white;border-radius:8px"><option value="low">Économie</option><option value="medium">Équilibrée</option><option value="high">Élevée</option></select></label><p><label>Sensibilité caméra <input id="sens" type="range" min=".4" max="2.2" step=".1" value="1" style="width:100%"></label></p><p><label>Vue caméra <select id="cameraMode" style="width:100%;padding:10px;background:#1c2923;color:white;border-radius:8px"><option value="third">Troisième personne</option><option value="first">Première personne</option></select></label></p><p class="fine">Bouton ARME : passer à l’autre emplacement. R / RECH. : recharger. F / RAMASSER : prendre un objet proche. Les armes et munitions sont dispersées sur tout le terrain. Maintiens TIR pour tirer en rafale. La zone rétrécit après la phase de départ.</p><div style="border:1px solid #52664f;background:#17221c;border-radius:10px;padding:12px;margin:12px 0"><strong>ARSENAL OFFICIEL</strong><p class="fine">Explore les packs graphiques, armes, soldats, vêtements, équipements, animations, sons et véhicules. Le catalogue est actuellement en mode démonstration.</p><a href="./market.html" target="_blank" rel="noopener" style="display:inline-block;padding:10px 14px;background:#d8e79a;color:#10150f;border-radius:8px;text-decoration:none;font-weight:800">OUVRIR LA BOUTIQUE</a></div><div class="actions"><button id="resume" class="primary">REPRENDRE</button><button id="quit">QUITTER LA PARTIE</button></div></div></section>
 <section id="results" class="screen modal hidden"><div class="panel"><div class="eyebrow">RAPPORT DE MISSION</div><h2 id="resultTitle">MISSION TERMINÉE</h2><p id="resultText"></p><div class="actions"><button id="again" class="primary">REJOUER</button><button id="lobbyBtn">MENU PRINCIPAL</button></div></div></section><div id="rotate">Tourne ton téléphone à l'horizontale pour une meilleure vue.</div>
+<script>
+(function(){
+  function showBootError(message){
+    var loading=document.getElementById('loading');
+    var msg=document.getElementById('loadmsg');
+    if(!loading||loading.classList.contains('hidden')) return;
+    if(msg) msg.textContent='Échec du démarrage : '+String(message||'module 3D inaccessible').slice(0,180)+'. Essaie dans Chrome avec Internet activé.';
+    var old=document.getElementById('openChrome');
+    if(!old){
+      var a=document.createElement('a');a.id='openChrome';
+      a.href='intent://debsboni7-dot.github.io/War-in-the-world/#Intent;scheme=https;package=com.android.chrome;end';
+      a.textContent='OUVRIR DANS CHROME';
+      a.style.cssText='display:inline-block;margin:18px auto 0;padding:13px 18px;border-radius:10px;background:#d8e79a;color:#101710;font:800 13px system-ui;text-decoration:none';
+      loading.appendChild(a);
+    }
+  }
+  window.addEventListener('error',function(e){
+    if(e && (e.message || (e.target && /script/i.test(e.target.tagName||''))))
+      showBootError(e.message || 'impossible de charger le module JavaScript');
+  },true);
+  window.addEventListener('unhandledrejection',function(e){
+    var reason=e && e.reason;
+    showBootError(reason && (reason.message||reason) || 'échec de chargement');
+  });
+})();
+</script>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
 <script type="module">
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
@@ -381,5 +407,5 @@ function init(){if(!helicopter)helicopter=makeHelicopter();if(player.model)scene
 init();
 </script><script>
 // Prevent a silent infinite spinner if the browser cannot download Three.js or its module dependencies.
-setTimeout(()=>{const l=document.getElementById('loading');if(l&&!l.classList.contains('hidden')){const m=document.getElementById('loadmsg');if(m)m.textContent='Le moteur 3D ne répond pas. Vérifie la connexion Internet puis recharge la page. Si le problème persiste, ouvre le jeu dans Chrome et désactive l’économiseur de données.'}},12000);
+setTimeout(()=>{const l=document.getElementById('loading');if(l&&!l.classList.contains('hidden')){const m=document.getElementById('loadmsg');if(m)m.textContent='Le démarrage est bloqué : le navigateur intégré ne charge peut-être pas les modules 3D ou WebGL. Ouvre le jeu dans Chrome, vérifie Internet, puis recharge la page.';if(!document.getElementById('openChrome')){var a=document.createElement('a');a.id='openChrome';a.href='intent://debsboni7-dot.github.io/War-in-the-world/#Intent;scheme=https;package=com.android.chrome;end';a.textContent='OUVRIR DANS CHROME';a.style.cssText='display:inline-block;margin:18px auto 0;padding:13px 18px;border-radius:10px;background:#d8e79a;color:#101710;font:800 13px system-ui;text-decoration:none';l.appendChild(a)}}},12000);
 </script></body></html>

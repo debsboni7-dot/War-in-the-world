@@ -55,3 +55,10 @@ La licence « un téléchargement » est stricte : elle peut bloquer l'accès si
 - Animations de référence indiquées par le projet source : Quaternius Universal Animation Library, CC0.
 
 Les armes et les décors externes sont chargés à distance depuis GitHub. Les fichiers binaires ne sont pas tous stockés dans ce dépôt; une connexion Internet est nécessaire pour les charger. Si une source devient indisponible, les armes procédurales et les ruines générées localement restent disponibles.
+
+
+## Modèles 3D de champ de bataille fabriqués dans le code
+
+Les pages `index.html` et `index-corrige.html` incluent des modèles Three.js originaux assemblés manuellement (sans recolorer ni remplacer les soldats importés) : véhicules utilitaires détruits, blindés endommagés, barrières routières en béton, caisses de munitions, sacs de sable, obstacles antichars, lampadaires brisés, ruines et débris. Les cratères et les ruines suivent maintenant l'altitude locale du terrain afin de réduire les éléments flottants ou enterrés. Le sol jouable utilise le matériau gravier/terre et aucune végétation n'est placée sur le champ de bataille.
+
+Ces modèles sont des géométries de jeu originales créées en Three.js, pas des fichiers `.blend` sculptés dans Blender. Ils sont légers pour un navigateur mobile et restent disponibles même si les modèles externes ne chargent pas.

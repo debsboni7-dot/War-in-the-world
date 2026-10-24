@@ -1,10 +1,11 @@
-name: Generate infantry GLB batch
+name: Generate War in the World 3D prototypes
 
 on:
   workflow_dispatch:
   push:
     paths:
       - "tools/generate_soldier_batch.py"
+      - "tools/generate_weapon_prop_batch.py"
       - ".github/workflows/generate-soldiers.yml"
 
 permissions:
@@ -20,16 +21,18 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y blender
-      - name: Generate 10 prototype soldier models
+      - name: Generate soldier prototypes
         run: blender --background --python tools/generate_soldier_batch.py
+      - name: Generate weapons and combat props
+        run: blender --background --python tools/generate_weapon_prop_batch.py
       - name: Commit generated GLB files
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/assets/models/soldiers/*.glb
+          git add public/assets/models/
           if git diff --cached --quiet; then
             echo "No generated model changes."
           else
-            git commit -m "Generate infantry prototype GLB batch 01"
+            git commit -m "Generate infantry, weapon and combat prop GLB prototypes"
             git push
           fi

@@ -68,12 +68,12 @@ function loadExternalPBR(material,slug,repeatX=1,repeatY=1){
  pbrLoader.load(root+'_nor_gl_4k.jpg',t=>{material.normalMap=configure(t);material.normalScale.set(1,1);material.needsUpdate=true},undefined,()=>{});
  pbrLoader.load(root+'_rough_4k.jpg',t=>{material.roughnessMap=configure(t);material.needsUpdate=true},undefined,()=>{});
 }
-loadExternalPBR(mats.soil,'ground_037',12,12);
+loadExternalPBR(mats.soil,'brown_mud_leaves_01',12,12);
 loadExternalPBR(mats.concrete,'concrete',3,3);
 loadExternalPBR(mats.metal,'rusty_painted_metal',2,2);
 loadExternalPBR(mats.green,'fabric_pattern_07',2,2);
 loadExternalPBR(mats.dark,'rusty_painted_metal',2,2);
-loadExternalPBR(terrainMat,'ground_037',18,18);
+loadExternalPBR(terrainMat,'brown_mud_leaves_01',18,18);
 loadExternalPBR(roadMat,'asphalt_03',8,24);
 // Battlefield vegetation remains intentionally absent. PBR sources: Poly Haven, CC0 license.
 // Terrain visible uniquement en terre, gravier et roche : aucune herbe ni végétation n'est placée.

@@ -355,8 +355,10 @@ function makeWeaponMesh(index){
  return g;
 }
 function spawnLoot(){
+ // Une arme de départ est toujours à portée du point d'atterrissage pour éviter une partie bloquée sans équipement.
+ const starterIndex=0,starterPos=V(3,groundHeight(3,0),0),starterMesh=makeWeaponMesh(starterIndex);starterMesh.position.set(starterPos.x,starterPos.y+.58,starterPos.z);starterMesh.rotation.y=Math.PI*.5;scene.add(starterMesh);const starterGlow=mesh(new THREE.TorusGeometry(.48,.025,5,20),new THREE.MeshBasicMaterial({color:'#b7ce7c'}),starterPos.x,starterPos.y+.07,starterPos.z);starterGlow.rotation.x=Math.PI/2;loot.push({pos:starterPos,index:starterIndex,mesh:starterMesh,glow:starterGlow,ammo:weaponData[starterIndex].mag,used:false});
  // Armes de plusieurs familles réparties dans toute la zone jouable, pas uniquement près du bâtiment.
- const guaranteed=[5,21,3,0,12,7,22,4];const pool=[...guaranteed];while(pool.length<30)pool.push(Math.floor(Math.random()*weaponData.length));
+ const guaranteed=[5,21,3,12,7,22,4];const pool=[...guaranteed];while(pool.length<30)pool.push(Math.floor(Math.random()*weaponData.length));
  for(let i=0;i<pool.length;i++){const p=spawnPoint(30,500),idx=pool[i],g=makeWeaponMesh(idx);p.y=groundHeight(p.x,p.z);g.position.set(p.x,p.y+.58,p.z);g.rotation.y=rand(0,TAU);scene.add(g);const glow=mesh(new THREE.TorusGeometry(.42,.022,5,20),new THREE.MeshBasicMaterial({color:weaponData[idx][1]==='Fusil de précision'?'#7fb3d7':weaponData[idx][1]==='Fusil à pompe'?'#d4b56b':weaponData[idx][1]==='Pistolet'?'#b7ce7c':'#91c8a0'}),p.x,p.y+.07,p.z);glow.rotation.x=Math.PI/2;loot.push({pos:p,index:idx,mesh:g,glow,ammo:weaponData[idx].mag,used:false})}
  for(let i=0;i<14;i++){const p=spawnPoint(25,490),g=new THREE.Group();g.position.copy(p);g.position.y=groundHeight(p.x,p.z);box(mats.yellow,0,.22,0,.5,.4,.5,g);box(mats.dark,0,.44,0,.55,.08,.55,g);scene.add(g);loot.push({pos:p,index:-1,mesh:g,glow:null,used:false,ammo:30})}
 }

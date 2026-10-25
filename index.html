@@ -200,6 +200,56 @@ function addBrokenRoadBarriers(){
  }
 }
 addBrokenRoadBarriers();
+// Battlefield damage landmarks: snapped utility poles, sagging cables, shattered concrete and a battered road sign.
+function addBattlefieldDamageLandmarks(){
+ const poleMat=new THREE.MeshStandardMaterial({color:'#484b43',metalness:.38,roughness:.88});
+ const wireMat=new THREE.MeshStandardMaterial({color:'#202522',metalness:.52,roughness:.75});
+ const concreteMat=new THREE.MeshStandardMaterial({color:'#77786e',roughness:1});
+ const fadedPaint=new THREE.MeshStandardMaterial({color:'#c5b887',roughness:.96});
+ const poleSpecs=[[-18,-186,.2],[18,-8,-.14],[-19,176,.32],[19,342,-.22],[-156,14,.42],[156,-8,-.3]];
+ const tops=[];
+ for(let i=0;i<poleSpecs.length;i++){
+  const [x,z,lean]=poleSpecs[i],y=terrainBaseHeight(x,z);
+  const g=new THREE.Group();g.position.set(x,y,z);g.rotation.z=lean;world.add(g);
+  const height=i%3===1?4.4:6.1;
+  cylinder(poleMat,0,height*.5,0,.13,.18,height,g);
+  box(poleMat,0,height-.35,0,2.3,.12,.14,g);
+  for(const dx of [-.82,0,.82]){
+   const ins=mesh(new THREE.SphereGeometry(.09,7,6),i%2?fadedPaint:wireMat,dx,height-.35,0,1,1,1,g);
+   tops.push({x:x+dx,y:y+height-.35,z,broken:i===1||i===4});
+  }
+  if(i===1||i===4){
+   const fallen=box(poleMat,rand(-1.8,1.8),.25,rand(-2,2),.16,.16,rand(3.5,5.5),g);
+   fallen.rotation.y=rand(-.8,.8);
+   for(let k=0;k<3;k++){const stone=mesh(new THREE.DodecahedronGeometry(1,0),concreteMat,rand(-2,2),.12,rand(-1.8,1.8),rand(.35,.8),rand(.18,.4),rand(.3,.7),g);stone.rotation.set(rand(-.3,.3),rand(0,TAU),rand(-.3,.3))}
+  }
+ }
+ // Short dark cable sections between nearby poles; deliberately broken in the middle.
+ for(let i=0;i<poleSpecs.length-1;i+=2){
+  const a=poleSpecs[i],b=poleSpecs[i+1],ax=a[0],az=a[1],bx=b[0],bz=b[1];
+  const ay=terrainBaseHeight(ax,az)+(i%3===0?5.6:4.1),by=terrainBaseHeight(bx,bz)+4.1;
+  for(let k=0;k<5;k++){
+   if((i===0&&k===2)||(i===4&&k===1))continue;
+   const t0=k/5,t1=(k+1)/5;
+   const x0=ax+(bx-ax)*t0,x1=ax+(bx-ax)*t1,z0=az+(bz-az)*t0,z1=az+(bz-az)*t1;
+   const y0=ay+(by-ay)*t0-.8*Math.sin(t0*Math.PI),y1=ay+(by-ay)*t1-.8*Math.sin(t1*Math.PI);
+   const dx=x1-x0,dy=y1-y0,dz=z1-z0,len=Math.hypot(dx,dy,dz);
+   const wire=mesh(new THREE.BoxGeometry(.035,len,.035),wireMat,(x0+x1)/2,(y0+y1)/2,(z0+z1)/2,1,1,1,world);
+   wire.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),new THREE.Vector3(dx,dy,dz).normalize());
+  }
+ }
+ // Torn directional sign beside the main road junction.
+ const sx=13,sz=-55,sy=terrainBaseHeight(sx,sz),sign=new THREE.Group();sign.position.set(sx,sy,sz);sign.rotation.y=-.18;world.add(sign);
+ cylinder(poleMat,0,1.5,0,.09,.12,3,sign);
+ const board=box(poleMat,.15,2.45,0,2.9,.9,.13,sign);board.rotation.z=-.08;
+ box(fadedPaint,.15,2.45,.075,2.35,.045,.025,sign);
+ for(let i=0;i<8;i++){
+  const x=sx+rand(-2.4,2.4),z=sz+rand(-1.8,1.8),sc=rand(.18,.62);
+  const chunk=mesh(new THREE.DodecahedronGeometry(1,0),concreteMat,x,terrainBaseHeight(x,z)+sc*.2,z,sc*1.25,sc*.5,sc,world);
+  chunk.rotation.set(rand(-.4,.4),rand(0,TAU),rand(-.4,.4));
+ }
+}
+addBattlefieldDamageLandmarks();
 // Extra military points of interest: fortified checkpoint, observation towers and supply compound.
 function createWatchTower(x,z){
  const g=new THREE.Group();g.position.set(x,terrainBaseHeight(x,z),z);world.add(g);

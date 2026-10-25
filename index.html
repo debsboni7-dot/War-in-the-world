@@ -543,12 +543,18 @@ function addLargeWorld(){
    for(const side of [-1,1]){
     box(glassMat,side*(w/2+.035),h*.52,0,.08,h*.83,d*.74,g);
     box(glassMat,0,h*.52,side*(d/2+.035),w*.74,h*.83,.08,g);
-    box(cyan,side*(w/2+.12),h*.51,0,.22,h*.91,.22,g);
-    box(cyan,0,h*.51,side*(d/2+.12),.22,h*.91,.22,g);
+    if(!coarse||((Math.abs(bx)+Math.abs(bz)+ix+iz)%2===0)){
+     box(cyan,side*(w/2+.12),h*.51,0,.22,h*.91,.22,g);
+     box(cyan,0,h*.51,side*(d/2+.12),.22,h*.91,.22,g);
+    }
    }
-   for(let fy=18;fy<h-8;fy+=24)box(cyan,0,fy,0,w+.25,.42,d+.25,g);
-   box(neonPink,0,h*.84,d/2+.16,w*.52,.55,.12,g);box(towerMat,0,h+.7,0,w+2,1.4,d+2,g);
-   box(cyan,0,h+2.1,0,1.1,2.8,1.1,g);box(neonPink,0,h*.42,-d/2-.18,Math.min(5,w*.12),h*.32,.16,g);
+   for(let fy=18;fy<h-8;fy+=coarse?48:24)box(cyan,0,fy,0,w+.25,.42,d+.25,g);
+   if(!coarse||((Math.abs(bx)+Math.abs(bz)+ix+iz)%2===0)){
+    box(neonPink,0,h*.84,d/2+.16,w*.52,.55,.12,g);
+    box(neonPink,0,h*.42,-d/2-.18,Math.min(5,w*.12),h*.32,.16,g);
+   }
+   box(towerMat,0,h+.7,0,w+2,1.4,d+2,g);
+   if(!coarse)box(cyan,0,h+2.1,0,1.1,2.8,1.1,g);
    solids.push({x,z,hx:w*.52,hz:d*.52});
   }
  }

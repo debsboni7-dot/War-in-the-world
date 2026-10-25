@@ -98,12 +98,12 @@ const surfaceTextureSpecs=[
 ];
 const surfaceTextures={};
 function makeSurfaceTexture(name,base,light,seed){
- const c=document.createElement('canvas');c.width=c.height=1024;const q=c.getContext('2d');q.fillStyle=base;q.fillRect(0,0,512,512);
+ const c=document.createElement('canvas');c.width=c.height=512;const q=c.getContext('2d');q.fillStyle=base;q.fillRect(0,0,512,512);
  let n=seed*7919;const rnd=()=>{n=(n*16807)%2147483647;return (n-1)/2147483646};
  for(let i=0;i<42000;i++){const x=rnd()*1024,y=rnd()*1024,w=1+rnd()*6,h=1+rnd()*5;q.globalAlpha=.06+rnd()*.19;q.fillStyle=rnd()>.48?light:'#101410';for(const ox of (x<6?[0,512]:x>506?[0,-512]:[0]))for(const oy of (y<6?[0,512]:y>506?[0,-512]:[0]))q.fillRect(x+ox,y+oy,w,h)}
  if(/acier|métal|asphalte|marquage/.test(name)){q.globalAlpha=.12;q.strokeStyle=light;q.lineWidth=1;for(let i=0;i<32;i++){const y=rnd()*512;q.beginPath();q.moveTo(0,y);q.lineTo(512,y);q.stroke()}}
  if(/camouflage|tissu|feuillage|herbe/.test(name)){for(let i=0;i<170;i++){const x=rnd()*512,y=rnd()*512,rx=3+rnd()*13,ry=2+rnd()*7,rot=rnd()*3;q.globalAlpha=.12+rnd()*.2;q.fillStyle=rnd()>.5?light:'#252f25';for(const ox of (x<16?[0,512]:x>496?[0,-512]:[0]))for(const oy of (y<16?[0,512]:y>496?[0,-512]:[0])){q.beginPath();q.ellipse(x+ox,y+oy,rx,ry,rot,0,TAU);q.fill()}}}
- q.globalAlpha=1;const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());t.name=name;return t;
+ q.globalAlpha=1;const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=Math.min(coarse?2:4,renderer.capabilities.getMaxAnisotropy());t.name=name;return t;
 }
 surfaceTextureSpecs.forEach((v,i)=>surfaceTextures[v[0]]=makeSurfaceTexture(v[0],v[1],v[2],i+1));
 surfaceTextures['terre'].repeat.set(24,24);surfaceTextures['gravier'].repeat.set(28,28);surfaceTextures['asphalte'].repeat.set(75,75);surfaceTextures['roche'].repeat.set(25,25);
@@ -118,9 +118,9 @@ const pbrLoader=new THREE.TextureLoader();
 function loadExternalPBR(material,slug,repeatX=1,repeatY=1){
  const root='https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/'+slug+'/'+slug;
  const configure=(t,isColor=false)=>{t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(repeatX,repeatY);t.anisotropy=Math.min(2,renderer.capabilities.getMaxAnisotropy());if(isColor)t.colorSpace=THREE.SRGBColorSpace;return t};
- pbrLoader.load(root+'_diff_4k.jpg',t=>{material.map=configure(t,true);material.needsUpdate=true},undefined,()=>{});
- pbrLoader.load(root+'_nor_gl_4k.jpg',t=>{material.normalMap=configure(t);material.normalScale.set(1,1);material.needsUpdate=true},undefined,()=>{});
- pbrLoader.load(root+'_rough_4k.jpg',t=>{material.roughnessMap=configure(t);material.needsUpdate=true},undefined,()=>{});
+ pbrLoader.load(root+'_diff_1k.jpg',t=>{material.map=configure(t,true);material.needsUpdate=true},undefined,()=>{});
+ pbrLoader.load(root+'_nor_gl_1k.jpg',t=>{material.normalMap=configure(t);material.normalScale.set(1,1);material.needsUpdate=true},undefined,()=>{});
+ pbrLoader.load(root+'_rough_1k.jpg',t=>{material.roughnessMap=configure(t);material.needsUpdate=true},undefined,()=>{});
 }
 loadExternalPBR(mats.soil,'brown_mud_leaves_01',12,12);
 loadExternalPBR(mats.concrete,'concrete',3,3);
@@ -130,7 +130,7 @@ loadExternalPBR(mats.metal,'rusty_painted_metal',2,2);
 pbrLoader.load('https://c.pxhere.com/photos/16/a2/camouflage_pattern_military_textile_material_uniform_fabric_khaki-1007538.jpg!d',t=>{t.colorSpace=THREE.SRGBColorSpace;t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(1,1);t.anisotropy=renderer.capabilities.getMaxAnisotropy();mats.green.map=t;mats.green.color.set('#ffffff');mats.green.needsUpdate=true},undefined,()=>{});
 
 loadExternalPBR(mats.dark,'rusty_painted_metal',2,2);
-loadExternalPBR(terrainMat,'brown_mud_leaves_01',18,18);
+loadExternalPBR(terrainMat,'asphalt_03',18,18);
 // Battlefield vegetation remains intentionally absent. PBR sources: Poly Haven, CC0 license.
 // Terrain visible uniquement en terre, gravier et roche : aucune herbe ni végétation n'est placée.
 // Roads, craters and wrecked battlefield props
@@ -529,6 +529,8 @@ function addLargeWorld(){
  }
  // Dense blocks of four huge towers; small gaps are narrow service streets.
  for(let bx=-3;bx<=3;bx++)for(let bz=-3;bz<=3;bz++){
+  // Keep a denser skyline on desktop, but reduce draw calls on low-power touch phones.
+  if(coarse&&(Math.abs(bx)%2===1||Math.abs(bz)%2===1))continue;
   if(Math.abs(bx)<=1&&Math.abs(bz)<=1)continue;
   const cx=bx*142,cz=bz*142;
   for(let ix=0;ix<2;ix++)for(let iz=0;iz<2;iz++){

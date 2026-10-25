@@ -330,7 +330,9 @@ function makeWeaponMesh(index){
  const barrel=(len,r=.035,mat=metalMat,z=-.42)=>{const o=mesh(new THREE.CylinderGeometry(r,r,len,12),mat,0,.015,z,1,1,1,g);o.rotation.x=Math.PI/2;return o};
  const part=(mat,x,y,z,sx,sy,sz)=>box(mat,x,y,z,sx,sy,sz,g);
  // Four distinct silhouettes: pistol, assault rifle, shotgun and scoped sniper.
- if(/Tripod|Minigun/i.test(weaponData[index]?.[0]||'')){\n   part(metalMat,0,.1,-.05,.2,.18,.5);part(steelMat,0,.12,-.42,.16,.12,.55);for(let k=0;k<6;k++){const barrelMesh=mesh(new THREE.CylinderGeometry(.025,.025,.58,8),k%2?steelMat:metalMat,(Math.cos(k*Math.PI/3)*.09),.13+Math.sin(k*Math.PI/3)*.09,-.78,1,1,1,g);barrelMesh.rotation.x=Math.PI/2}part(polymerMat,0,-.08,.18,.22,.16,.24);for(const side of [-1,1]){const leg=mesh(new THREE.CylinderGeometry(.018,.028,.48,6),metalMat,side*.2,-.29,.16,1,1,1,g);leg.rotation.z=side*.28}part(gripMat,0,-.08,-.02,.12,.16,.12);part(sightMat,0,.24,-.2,.06,.06,.16);\n }else if(index===0||weaponData[index]?.[1]==='Pistolet'){
+ if(/Tripod|Minigun/i.test(weaponData[index]?.[0]||'')){
+   part(metalMat,0,.1,-.05,.2,.18,.5);part(steelMat,0,.12,-.42,.16,.12,.55);for(let k=0;k<6;k++){const barrelMesh=mesh(new THREE.CylinderGeometry(.025,.025,.58,8),k%2?steelMat:metalMat,(Math.cos(k*Math.PI/3)*.09),.13+Math.sin(k*Math.PI/3)*.09,-.78,1,1,1,g);barrelMesh.rotation.x=Math.PI/2}part(polymerMat,0,-.08,.18,.22,.16,.24);for(const side of [-1,1]){const leg=mesh(new THREE.CylinderGeometry(.018,.028,.48,6),metalMat,side*.2,-.29,.16,1,1,1,g);leg.rotation.z=side*.28}part(gripMat,0,-.08,-.02,.12,.16,.12);part(sightMat,0,.24,-.2,.06,.06,.16);
+ }else if(index===0||weaponData[index]?.[1]==='Pistolet'){
    part(metalMat,0,.015,0,.17,.17,.43);part(steelMat,0,.075,-.015,.15,.07,.38);
    barrel(.16,.027,metalMat,-.28);part(polymerMat,0,-.15,.105,.115,.28,.14);part(gripMat,0,-.17,.11,.12,.2,.12);
    part(metalMat,0,-.02,-.2,.08,.045,.12);part(sightMat,0,.12,-.06,.045,.035,.08);

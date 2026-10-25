@@ -507,7 +507,7 @@ function makeWeaponMesh(index){
    part(metalMat,0,.105,-.20,.10,.025,.48);part(polymerMat,0,-.20,-.22,.095,.23,.16);part(steelMat,0,.105,-.77,.055,.07,.12);part(sightMat,0,.13,-.76,.075,.025,.08);
    for(let j=0;j<6;j++)part(metalMat,0,.09,-.42-j*.065,.11,.025,.025);
  }
- g.traverse(o=>{if(o.isMesh){o.castShadow=false;o.receiveShadow=true}});
+ const palette=['#72f5ff','#ff784f','#9cff75','#d58aff','#ffd36a','#6aa7ff','#ff5c8a','#d7f4ff'];const finish=palette[Math.abs(index*7+Math.floor(index/3))%palette.length];const finishMat=new THREE.MeshStandardMaterial({color:finish,emissive:finish,emissiveIntensity:.7,metalness:.55,roughness:.3});const marking=new THREE.MeshStandardMaterial({color:'#101b29',metalness:.75,roughness:.35});part(marking,0,.17,-.22,.075,.025,.34);part(finishMat,.079,.075,-.24,.012,.018,.22);part(finishMat,-.079,.075,-.24,.012,.018,.22);for(let k=0;k<3;k++)part(finishMat,.081,.018,-.12-k*.075,.009,.012,.026);g.traverse(o=>{if(o.isMesh){o.castShadow=false;o.receiveShadow=true}});g.userData.skinColor=finish;
  return g;
 }
 function spawnLoot(){

@@ -598,5 +598,5 @@ function init(){addFutureFront();addLargeWorld();if(!helicopter)helicopter=makeH
 init();
 </script><script>
 // Prevent a silent infinite spinner if the browser cannot download Three.js or its module dependencies.
-setTimeout(()=>{if(window.__witwBootError)window.__witwBootError('délai dépassé : CDN 3D ou WebGL inaccessible');},12000);
+setTimeout(()=>{if(!window.__witwBooted&&window.__witwBootError)window.__witwBootError('délai dépassé : CDN 3D ou WebGL inaccessible');},12000);
 </script></body></html>

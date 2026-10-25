@@ -461,7 +461,7 @@ function updateCamera(dt){
  camera.updateProjectionMatrix();
 }
 function updateSmoke(dt){for(const s of smokes){s.life-=dt;if(s.life<=0){s.life=rand(3,7);s.mesh.position.set(rand(-.6,.6),rand(0,2),rand(-.6,.6));s.mesh.scale.setScalar(rand(.6,1.7));}s.mesh.position.y+=dt*.28;s.mesh.material.opacity=Math.max(0,Math.min(.3,s.life/s.max*.3))}}
-function frame(now){requestAnimationFrame(frame);const dt=clamp((now-last)/1000,.001,.04);last=now;if(state==='playing'){elapsed+=dt;zoneR=Math.max(24,480-Math.max(0,elapsed-45)*2.05);updatePlayer(dt);if(!falling)updateBots(dt);if(elapsed>30&&Math.hypot(player.pos.x,player.pos.z)>zoneR)damagePlayer(dt*(elapsed>150?7:3));if(bots.every(b=>b.dead))finish(true);if(elapsed>420){for(const b of bots)if(!b.dead)b.hp-=dt*3;if(bots.every(b=>b.dead))finish(true)}updateCamera(dt);setHUD();drawMap();toastLeft-=dt;if(toastLeft<=0)$('toast').style.opacity=0}else if(state==='lobby'){const t=now*.00025;camera.position.set(Math.sin(t)*9,5,19);camera.lookAt(0,3,0);if(player.model)player.model.root.visible=false;if(helicopter){helicopter.visible=true;helicopter.position.set(Math.sin(t)*4,4,0);helicopter.rotation.y=t}}for(const t of tracers){t.life-=dt;t.line.material.opacity=Math.max(0,t.life/.08);if(t.life<=0){scene.remove(t.line)}}for(let i=tracers.length-1;i>=0;i--)if(tracers[i].life<=0)tracers.splice(i,1);updateSmoke(dt);renderer.render(scene,camera)}
+function frame(now){requestAnimationFrame(frame);const dt=clamp((now-last)/1000,.001,.04);last=now;if(state==='playing'){elapsed+=dt;updateFutureWorld(dt);zoneR=Math.max(24,480-Math.max(0,elapsed-45)*2.05);updatePlayer(dt);if(!falling)updateBots(dt);if(elapsed>30&&Math.hypot(player.pos.x,player.pos.z)>zoneR)damagePlayer(dt*(elapsed>150?7:3));if(bots.every(b=>b.dead))finish(true);if(elapsed>420){for(const b of bots)if(!b.dead)b.hp-=dt*3;if(bots.every(b=>b.dead))finish(true)}updateCamera(dt);setHUD();drawMap();toastLeft-=dt;if(toastLeft<=0)$('toast').style.opacity=0}else if(state==='lobby'){const t=now*.00025;camera.position.set(Math.sin(t)*9,5,19);camera.lookAt(0,3,0);if(player.model)player.model.root.visible=false;if(helicopter){helicopter.visible=true;helicopter.position.set(Math.sin(t)*4,4,0);helicopter.rotation.y=t}}for(const t of tracers){t.life-=dt;t.line.material.opacity=Math.max(0,t.life/.08);if(t.life<=0){scene.remove(t.line)}}for(let i=tracers.length-1;i>=0;i--)if(tracers[i].life<=0)tracers.splice(i,1);updateSmoke(dt);renderer.render(scene,camera)}
 function addFutureFront(){
  const cyan=new THREE.MeshStandardMaterial({color:'#58efff',emissive:'#19cce9',emissiveIntensity:2.2,metalness:.45,roughness:.28});
  const blue=new THREE.MeshStandardMaterial({color:'#243d57',metalness:.78,roughness:.34});
@@ -518,12 +518,12 @@ function addLargeWorld(){
  // Four distant city districts with tower silhouettes, windows and glowing rooftop beacons.
  for(let district=0;district<4;district++){
   const cx=[-360,360,-350,355][district],cz=[-340,-320,350,350][district];
-  for(let i=0;i<13;i++){
-   const x=cx+rand(-92,92),z=cz+rand(-85,85),w=rand(9,20),d=rand(9,20),h=rand(24,82);
+  for(let i=0;i<9;i++){
+   const x=cx+rand(-92,92),z=cz+rand(-85,85),w=rand(9,20),d=rand(9,20),h=rand(20,60);
    const g=new THREE.Group();g.position.set(x,terrainBaseHeight(x,z),z);g.rotation.y=rand(-.12,.12);world.add(g);
    box(mats.dark,0,h/2,0,w,h,d,g);
-   for(let y=4;y<h-2;y+=5){
-    for(let wx=-w*.36;wx<w*.4;wx+=2.8)if(Math.random()>.18){
+   for(let y=4;y<h-2;y+=8){
+    for(let wx=-w*.36;wx<w*.4;wx+=4.2)if(Math.random()>.18){
      const win=box(i%3===0?cyan:white,wx,y,d*.501,.72,1.8,.06,g);
      if(Math.random()>.72)win.material=white;
     }

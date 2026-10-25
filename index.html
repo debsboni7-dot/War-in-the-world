@@ -468,9 +468,9 @@ function updateCamera(dt){
    const desired=target.clone().add(V(0,.04,0));camera.position.lerp(desired,1-Math.exp(-20*dt));camera.lookAt(target.clone().add(dir.clone().multiplyScalar(30)));
    const fov=aiming?(sniper?22:48):76;camera.fov=THREE.MathUtils.damp(camera.fov,fov,9,dt);
  }else{
-   const dist=aiming?(sniper?1.55:2.65):5.4,cp=Math.cos(player.pitch),sp=Math.sin(player.pitch),shoulder=aiming?.92:0;
+   const dist=aiming?(sniper?1.55:2.65):5.4,cp=Math.cos(player.pitch),sp=Math.sin(player.pitch),shoulder=aiming?1.05:0.78;
    const desired=V(target.x+Math.sin(player.yaw)*dist*cp+Math.cos(player.yaw)*shoulder,target.y+dist*sp+.35,target.z+Math.cos(player.yaw)*dist*cp-Math.sin(player.yaw)*shoulder);
-   camera.position.lerp(desired,1-Math.exp(-12*dt));camera.lookAt(target.clone().add(dir.clone().multiplyScalar(aiming?35:0)));
+   camera.position.lerp(desired,1-Math.exp(-12*dt));camera.lookAt(target.clone().add(dir.clone().multiplyScalar(aiming?35:0)).add(V(Math.cos(player.yaw)*shoulder*.42,0,-Math.sin(player.yaw)*shoulder*.42)));
    camera.fov=THREE.MathUtils.damp(camera.fov,aiming?(sniper?9:48):68,9,dt);
  }
  camera.updateProjectionMatrix();

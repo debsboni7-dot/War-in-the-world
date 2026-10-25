@@ -607,7 +607,39 @@ function updateFutureWorld(dt){
  }
 }
 
-function init(){addFutureFront();addLargeWorld();if(!helicopter)helicopter=makeHelicopter();if(player.model)scene.remove(player.model.root);player.model=makeSoldier();player.model.root.visible=false;applyQuality();resize();window.__witwBooted=true;$('loading').classList.add('hidden');requestAnimationFrame(frame)}
+function addBattlefieldVegetation(){
+ // Instanced vegetation adds natural color to the outskirts without creating hundreds of draw calls.
+ const grassMat=new THREE.MeshStandardMaterial({color:'#66834a',roughness:.96,side:THREE.DoubleSide});
+ const grassTipMat=new THREE.MeshStandardMaterial({color:'#9aa85c',roughness:.92,side:THREE.DoubleSide});
+ const shrubMat=new THREE.MeshStandardMaterial({color:'#426743',roughness:.98});
+ const shrubLightMat=new THREE.MeshStandardMaterial({color:'#6f8750',roughness:.98});
+ const grassGeo=new THREE.ConeGeometry(.11,.52,4,1);
+ const tipGeo=new THREE.ConeGeometry(.065,.32,4,1);
+ const shrubGeo=new THREE.IcosahedronGeometry(.7,1);
+ const grass=new THREE.InstancedMesh(grassGeo,grassMat,520);
+ const tips=new THREE.InstancedMesh(tipGeo,grassTipMat,520);
+ const shrubs=new THREE.InstancedMesh(shrubGeo,shrubMat,150);
+ const shrubLights=new THREE.InstancedMesh(new THREE.IcosahedronGeometry(.43,1),shrubLightMat,150);
+ const dummy=new THREE.Object3D();let gi=0,si=0,tries=0;
+ while(gi<520&&tries++<6000){
+  const x=rand(-555,555),z=rand(-555,555),r=Math.hypot(x,z);
+  if(r<210||Math.abs(x)<18||Math.abs(z-8)<18||Math.abs(x)<20&&z>-115&&z<-60)continue;
+  const y=terrainBaseHeight(x,z)+.03,h=rand(.55,1.35),rot=rand(0,TAU);
+  dummy.position.set(x,y+h*.25,z);dummy.rotation.set(rand(-.12,.12),rot,rand(-.12,.12));dummy.scale.set(rand(.75,1.25),h,rand(.75,1.25));dummy.updateMatrix();grass.setMatrixAt(gi,dummy.matrix);
+  dummy.position.set(x+rand(-.12,.12),y+h*.53,z+rand(-.12,.12));dummy.scale.setScalar(h*.8);dummy.updateMatrix();tips.setMatrixAt(gi,dummy.matrix);gi++;
+ }
+ tries=0;
+ while(si<150&&tries++<2500){
+  const x=rand(-550,550),z=rand(-550,550),r=Math.hypot(x,z);
+  if(r<235||Math.abs(x)<22||Math.abs(z-8)<22)continue;
+  const y=terrainBaseHeight(x,z),scale=rand(.65,1.65);
+  dummy.position.set(x,y+scale*.43,z);dummy.rotation.set(rand(-.15,.15),rand(0,TAU),rand(-.15,.15));dummy.scale.set(scale,scale*rand(.65,1),scale);dummy.updateMatrix();shrubs.setMatrixAt(si,dummy.matrix);
+  dummy.position.set(x+scale*.18,y+scale*.72,z-scale*.12);dummy.scale.setScalar(scale*.55);dummy.updateMatrix();shrubLights.setMatrixAt(si,dummy.matrix);si++;
+ }
+ for(const inst of [grass,tips,shrubs,shrubLights]){inst.count=inst===grass||inst===tips?gi:si;inst.instanceMatrix.needsUpdate=true;inst.castShadow=false;inst.receiveShadow=false;world.add(inst)}
+ grass.frustumCulled=false;tips.frustumCulled=false;shrubs.frustumCulled=false;shrubLights.frustumCulled=false;
+}
+function init(){addFutureFront();addLargeWorld();addBattlefieldVegetation();if(!helicopter)helicopter=makeHelicopter();if(player.model)scene.remove(player.model.root);player.model=makeSoldier();player.model.root.visible=false;applyQuality();resize();window.__witwBooted=true;$('loading').classList.add('hidden');requestAnimationFrame(frame)}
 init();
 </script><script>
 // Prevent a silent infinite spinner if the browser cannot download Three.js or its module dependencies.

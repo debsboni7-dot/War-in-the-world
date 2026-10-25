@@ -111,7 +111,7 @@ mats.soil.map=surfaceTextures['terre'];mats.concrete.map=surfaceTextures['béton
 for(const k of ['soil','concrete','metal','sandbag','dark','green','rust','glass','yellow'])mats[k].needsUpdate=true;
 const weaponTextureMaterials=surfaceTextureSpecs.map(v=>new THREE.MeshStandardMaterial({map:surfaceTextures[v[0]],roughness:/verre/.test(v[0])?.35:.88,metalness:/acier|métal/.test(v[0])?.55:.04}));
 
-function terrainBaseHeight(x,z){return -.25+Math.sin(x*.08)*.8+Math.cos(z*.065)*.65+Math.sin((x-z)*.027)*1.4+Math.sin(x*.22-z*.13)*.22}
+function terrainBaseHeight(x,z){return Math.sin(x*.018)*.035+Math.cos(z*.016)*.03+Math.sin((x-z)*.012)*.025}
 const terrainGeo=new THREE.PlaneGeometry(1200,1200,72,72);const pos=terrainGeo.attributes.position;for(let i=0;i<pos.count;i++){const x=pos.getX(i),y=pos.getY(i);pos.setZ(i,terrainBaseHeight(x,-y)+.25)}terrainGeo.computeVertexNormals();const terrainMat=new THREE.MeshStandardMaterial({map:surfaceTextures['asphalte'],roughness:.92,metalness:.12,color:'#aeb8bf'});const terrain=new THREE.Mesh(terrainGeo,terrainMat);terrain.rotation.x=-Math.PI/2;terrain.position.y=-.25;terrain.receiveShadow=true;world.add(terrain);
 // Real scanned PBR texture sets from Poly Haven (CC0). If a remote file fails, the local procedural texture remains in place.
 const pbrLoader=new THREE.TextureLoader();
@@ -478,6 +478,7 @@ function addFutureFront(){
   }
   if(i%3!==0)box(cyan,side*(w*.5+.08),h*.45,0,.12,h*.55,.16,g);
   if(i%2===0){const shard=box(mats.concrete,w*.28,h*.88,-d*.18,w*.46,1.1,d*.34,g);shard.rotation.z=rand(-.35,.35)}
+  solids.push({x,z,hx:w*.53,hz:d*.53});
  }
  for(const side of [-1,1])for(let z=-132;z<140;z+=34)box(cyan,side*8.1,terrainBaseHeight(side*8.1,z)+.12,z,.12,.09,rand(5,10));
  for(const [x,z] of [[-28,-35],[29,-10],[-37,48],[36,82],[-52,105],[53,-92]]){

@@ -80,58 +80,9 @@ let cfg={quality:'medium',sensitivity:1};try{Object.assign(cfg,JSON.parse(localS
 if(isPS4)cfg.quality='medium';
 const renderer=new THREE.WebGLRenderer({canvas:$('view'),antialias:false,alpha:false,powerPreference:'high-performance'});renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.28;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 
-// HIGGSFIELD BATTLEFIELD SET DRESSING — integrated playable fallback.
-function addBattlefieldCover(){
- const mats={
-  earth:new THREE.MeshStandardMaterial({color:'#554735',roughness:1}),
-  concrete:new THREE.MeshStandardMaterial({color:'#777b76',roughness:.96}),
-  bag:new THREE.MeshStandardMaterial({color:'#8b805d',roughness:1}),
-  bagDark:new THREE.MeshStandardMaterial({color:'#555c43',roughness:1}),
-  metal:new THREE.MeshStandardMaterial({color:'#343c3d',roughness:.72,metalness:.32}),
-  wood:new THREE.MeshStandardMaterial({color:'#67452b',roughness:.94}),
-  rock:new THREE.MeshStandardMaterial({color:'#5e5d55',roughness:1}),
-  pine:new THREE.MeshStandardMaterial({color:'#25432c',roughness:1}),
-  pine2:new THREE.MeshStandardMaterial({color:'#385638',roughness:1})
- };
- const group=new THREE.Group();group.name='HIGGSFIELD_BATTLEFIELD_PLAYABLE';
- const box=(name,x,y,z,sx,sy,sz,mat,rot=0)=>{const m=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),mat);m.name=name;m.position.set(x,y,z);m.rotation.y=rot;m.castShadow=true;m.receiveShadow=true;group.add(m);return m};
- const ico=(name,x,y,z,sx,sy,sz,mat)=>{const m=new THREE.Mesh(new THREE.IcosahedronGeometry(1,1),mat);m.name=name;m.position.set(x,y,z);m.scale.set(sx,sy,sz);m.rotation.set(Math.random()*.4,Math.random()*6,Math.random()*.3);m.castShadow=true;group.add(m)};
- // Combat lane remains open; cover is arranged on both flanks.
- for(const side of [-1,1]){
-  for(let j=0;j<3;j++){
-   const x=side*(7.5+j*3.4),z=-3+(j%2)*7,rot=side*.08;
-   for(let k=0;k<4;k++)box('HFG_Sandbag_'+side+'_'+j+'_'+k,x+(k-1.5)*.72,.42,z,.78,.38,.52,k%3===0?mats.bagDark:mats.bag,rot);
-   if(j!==1)box('HFG_ConcreteBarrier_'+side+'_'+j,x,.9,z+1.2,2.5,1.25,.55,mats.concrete,rot);
-  }
- }
- // Low ruined wall and wrecked facade at the far end.
- for(let i=0;i<7;i++)box('HFG_RuinedWall_'+i,-5+i*1.55,.68,-15,1.45,1.35+(i%3)*.32,.5,mats.concrete,(i%2)*.035);
- box('HFG_RuinedBuilding_Back',0,2.1,-20,11,4.2,.65,mats.concrete);
- for(let i=0;i<4;i++)box('HFG_DarkWindow_'+i,-3.8+i*2.5,2.4,-19.62,.85,1.4,.06,mats.metal);
- // Supply crates and battered drums near cover.
- for(let i=0;i<8;i++){
-  const side=i%2?1:-1,x=side*(5.2+(i%3)*2),z=4+Math.floor(i/2)*2.3;
-  box('HFG_AmmoCrate_'+i,x,.48,z,.9,.9,.9,mats.wood,(i%3)*.22);
-  const drum=new THREE.Mesh(new THREE.CylinderGeometry(.34,.34,.95,12),mats.metal);drum.name='HFG_Barrel_'+i;drum.position.set(x+side*1.15,.48,z+.35);drum.castShadow=true;group.add(drum);
- }
- // Pines and rocks add depth around the edges without blocking the player start.
- for(let i=0;i<22;i++){
-  const side=i%2?1:-1,x=side*(15+Math.random()*9),z=-20+Math.random()*43;
-  ico('HFG_Rock_'+i,x,.25+Math.random()*.15,z,.45+Math.random()*.6,.3+Math.random()*.35,.4+Math.random()*.5,mats.rock);
-  if(i%2===0){
-   const trunk=new THREE.Mesh(new THREE.CylinderGeometry(.16,.27,1.7,7),mats.wood);trunk.name='HFG_PineTrunk_'+i;trunk.position.set(x, .85,z);trunk.castShadow=true;group.add(trunk);
-   for(let tier=0;tier<3;tier++){const crown=new THREE.Mesh(new THREE.ConeGeometry(1.15-tier*.19,1.7,7),tier%2?mats.pine2:mats.pine);crown.name='HFG_PineCrown_'+i+'_'+tier;crown.position.set(x,1.8+tier*.82,z);crown.castShadow=true;group.add(crown)}
-  }
- }
- // Ground debris at the edges of the main firing lane.
- for(let i=0;i<30;i++){const side=i%2?1:-1;ico('HFG_Rubble_'+i,side*(4.5+Math.random()*10),.06,-12+Math.random()*27,.12+Math.random()*.2,.06+Math.random()*.09,.1+Math.random()*.18,mats.rock)}
- scene.add(group);return group;
-}
-let higgsfieldBattlefield=null;
 
 const scene=new THREE.Scene();scene.background=new THREE.Color('#a8d8f4');scene.fog=new THREE.Fog('#a8d8f4',650,1500);
 const camera=new THREE.PerspectiveCamera(68,1,.1,1800);scene.add(camera);
-higgsfieldBattlefield=addBattlefieldCover();
 scene.add(new THREE.HemisphereLight('#e4f8ff','#526b7c',2.35));const moon=new THREE.DirectionalLight('#fff5d9',3.35);moon.position.set(-260,360,140);moon.castShadow=true;moon.shadow.mapSize.set(1024,1024);moon.shadow.camera.left=-220;moon.shadow.camera.right=220;moon.shadow.camera.top=220;moon.shadow.camera.bottom=-220;moon.shadow.camera.near=1;moon.shadow.camera.far=700;moon.shadow.bias=-0.00025;moon.shadow.normalBias=0.035;moon.shadow.radius=3;moon.shadow.camera.updateProjectionMatrix();scene.add(moon);
 const ambient=new THREE.AmbientLight('#8dc8e8',.5);scene.add(ambient);
 const world=new THREE.Group();scene.add(world);const solids=[],loot=[],bots=[],smokes=[],tracers=[],vfx=[],bulletMarks=[],impactParticles=[],shellCasings=[],blastWaves=[],blastDebris=[];let state='lobby',elapsed=0,zoneR=480,last=performance.now(),toastLeft=0,fireHeld=false,mouseLook=false,settingsFrom='lobby',sens=cfg.sensitivity||1,aiming=false,crouched=false,runHeld=false,cameraMode=cfg.cameraMode||'third';

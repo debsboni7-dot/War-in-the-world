@@ -896,7 +896,46 @@ function addBattlefieldRuinClusters(){
   solids.push({x,z,hx:6.7,hz:5.2,tower:true,baseY:terrainBaseHeight(x,z),height:3.1});
  }
 }
-function init(){addFutureFront();addLargeWorld();addBattlefieldVegetation();addBattlefieldPOIs();addBattlefieldRuinClusters();if(!helicopter)helicopter=makeHelicopter();if(player.model)scene.remove(player.model.root);player.model=makeSoldier();player.model.root.visible=false;applyQuality();resize();window.__witwBooted=true;$('loading').classList.add('hidden');requestAnimationFrame(frame)}
+function addWreckedMilitaryVehicles(){
+ const armor=new THREE.MeshStandardMaterial({color:'#414a3e',metalness:.42,roughness:.88});
+ const armorLight=new THREE.MeshStandardMaterial({color:'#59604f',metalness:.35,roughness:.9});
+ const rubber=new THREE.MeshStandardMaterial({color:'#202321',roughness:.98});
+ const glass=new THREE.MeshStandardMaterial({color:'#192c30',metalness:.3,roughness:.3});
+ const rust=new THREE.MeshStandardMaterial({color:'#714a34',metalness:.32,roughness:.94});
+ const wrecks=[[-42,-105,.38],[112,74,-.62],[-132,92,.18],[208,-98,.9]];
+ for(let n=0;n<wrecks.length;n++){
+  const [x,z,rot]=wrecks[n],g=new THREE.Group();g.position.set(x,terrainBaseHeight(x,z),z);g.rotation.y=rot;world.add(g);
+  const body=box(armor,0,.92,0,5.8,1.45,2.55,g);body.rotation.z=n===1?-.13:.025;
+  box(armorLight,-.45,1.76,-.05,2.9,.62,2.15,g);
+  box(armor,1.65,1.35,-.05,1.55,.62,1.55,g);
+  // Blackened windows and missing panels.
+  for(const side of [-1,1]){
+   for(const px of [-1.55,.25]){
+    const win=box(glass,px,1.62,side*1.29,.92,.48,.045,g);win.rotation.z=n===2?.18:0;
+   }
+   for(const px of [-1.9,1.7]){
+    const wheel=cylinder(rubber,px,.55,side*1.28,.43,.43,.22,g);wheel.rotation.x=Math.PI/2;
+    const hub=cylinder(rust,px,.55,side*1.41,.15,.15,.04,g);hub.rotation.x=Math.PI/2;
+   }
+  }
+  // A damaged hood, open hatch and a few scattered pieces of torn armor.
+  const hood=box(armorLight,-2.2,1.72,.05,1.65,.16,2.2,g);hood.rotation.z=n%2?.22:-.08;
+  const hatch=box(rust,.1,2.18,.12,.9,.12,.8,g);hatch.rotation.x=.35;hatch.rotation.z=-.2;
+  for(let k=0;k<7;k++){
+   const sc=rand(.15,.42),p=mesh(new THREE.DodecahedronGeometry(1,0),k%2?rust:armorLight,rand(-4,4),.13,rand(-2.8,2.8),sc*1.4,sc*.5,sc,g);
+   p.rotation.set(rand(-.4,.4),rand(0,TAU),rand(-.4,.4));
+  }
+  if(n===0||n===2){
+   const smokeMat=new THREE.MeshStandardMaterial({color:'#343936',transparent:true,opacity:.42,roughness:1,depthWrite:false});
+   for(let k=0;k<4;k++){
+    const puff=mesh(new THREE.SphereGeometry(1,8,6),smokeMat,rand(-.3,.3),2.2+k*.6,rand(-.25,.25),.38+k*.1,.48+k*.13,.38+k*.1,g);
+    puff.userData.smokePuff=true;
+   }
+  }
+  solids.push({x,z,hx:3.3,hz:1.65,tower:true,baseY:terrainBaseHeight(x,z),height:2.4});
+ }
+}
+function init(){addFutureFront();addLargeWorld();addBattlefieldVegetation();addBattlefieldPOIs();addBattlefieldRuinClusters();addWreckedMilitaryVehicles();if(!helicopter)helicopter=makeHelicopter();if(player.model)scene.remove(player.model.root);player.model=makeSoldier();player.model.root.visible=false;applyQuality();resize();window.__witwBooted=true;$('loading').classList.add('hidden');requestAnimationFrame(frame)}
 init();
 </script><script>
 // Prevent a silent infinite spinner if the browser cannot download Three.js or its module dependencies.

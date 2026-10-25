@@ -976,7 +976,66 @@ function addForwardDefensivePositions(){
  position(-42,151,-.25);
  position(214,16,Math.PI*.48);
 }
-function init(){addFutureFront();addLargeWorld();addBattlefieldVegetation();addBattlefieldPOIs();addBattlefieldRuinClusters();addWreckedMilitaryVehicles();addForwardDefensivePositions();if(!helicopter)helicopter=makeHelicopter();if(player.model)scene.remove(player.model.root);player.model=makeSoldier();player.model.root.visible=false;applyQuality();resize();window.__witwBooted=true;$('loading').classList.add('hidden');requestAnimationFrame(frame)}
+
+function addForwardCommandPost(){
+ const olive=new THREE.MeshStandardMaterial({color:'#4c5943',roughness:.96});
+ const faded=new THREE.MeshStandardMaterial({color:'#73715d',roughness:.94});
+ const metal=new THREE.MeshStandardMaterial({color:'#3c4542',metalness:.52,roughness:.7});
+ const canvas=new THREE.MeshStandardMaterial({color:'#a89c78',roughness:1});
+ const screen=new THREE.MeshStandardMaterial({color:'#172d29',emissive:'#16483b',emissiveIntensity:.45,roughness:.5});
+ const red=new THREE.MeshStandardMaterial({color:'#e65b3d',emissive:'#a52a16',emissiveIntensity:.75});
+ // Forward command post: two weathered field tents and an exposed radio station.
+ const x=22,z=218,g=new THREE.Group();g.position.set(x,terrainBaseHeight(x,z),z);g.rotation.y=-.16;world.add(g);
+ box(mats.soil,0,.1,0,25,.2,17,g);
+ for(const [tx,tz] of [[-6,-2],[6,-2]]){
+  const tent=new THREE.Group();tent.position.set(tx,0,tz);g.add(tent);
+  box(olive,0,1.15,0,6,2.3,4.5,tent);
+  const roof=mesh(new THREE.ConeGeometry(3.9,1.6,4),faded,0,2.8,0,1,1,1,tent);roof.rotation.y=Math.PI/4;
+  box(mats.dark,0,.92,2.29,1.8,1.75,.08,tent);
+  box(mats.green,-1.9,.65,2.35,.28,1.2,.1,tent);
+ }
+ // Command table and a luminous tactical map.
+ box(metal,0,1.05,5.3,3.6,.18,1.5,g);
+ box(canvas,0,1.16,5.3,3.25,.035,1.2,g);
+ for(let i=0;i<5;i++)box(i%2?red:screen,-1.2+(i%3)*1.15,1.19,4.95+Math.floor(i/3)*.65,.45,.025,.28,g);
+ box(olive,0,1.75,6.5,1.4,1.3,.9,g);
+ box(screen,0,1.85,6.97,.9,.65,.035,g);
+ // Mast, cross-bracing, dish and signal lamps.
+ for(const [mx,mz] of [[-10,-5],[10,-5]]){
+  box(metal,mx,4,mz,.18,8,.18,g);
+  for(let y=1;y<=7;y+=1.5)box(metal,mx,y,mz,.95,.07,.08,g);
+  const dish=mesh(new THREE.SphereGeometry(1,12,8,0,Math.PI*2,0,Math.PI*.48),faded,mx,6.3,mz+.35,1.05,.22,1.05,g);dish.rotation.x=-.25;
+  const lamp=mesh(new THREE.SphereGeometry(.18,8,6),red,mx,8.15,mz,1,1,1,g);lamp.userData.beacon=true;
+ }
+ for(let i=0;i<8;i++){
+  const cx=-10+(i%4)*2.5,cz=8+Math.floor(i/4)*2.2;
+  const crate=box(i%2?mats.green:mats.rust,cx,.65,cz,1.65,1.25,1.55,g);
+  box(metal,cx,.66,cz+.79,1.35,.12,.04,g);
+ }
+ for(const [lx,lz] of [[-11,7],[11,7]]){
+  box(metal,lx,2.4,lz,.12,4,.12,g);
+  const glow=mesh(new THREE.BoxGeometry(.55,.35,.35),new THREE.MeshStandardMaterial({color:'#fff0c4',emissive:'#ffcc75',emissiveIntensity:1.5}),lx,4.3,lz,1,1,1,g);
+  glow.userData.commandLight=true;
+ }
+ solids.push({x,z,hx:12.8,hz:8.8,tower:true,baseY:terrainBaseHeight(x,z),height:3.4});
+ // A field gun emplacement adds a readable silhouette and a low defensive firing position.
+ const gunMat=new THREE.MeshStandardMaterial({color:'#444b40',metalness:.55,roughness:.76});
+ for(const [gx,gz,rot] of [[-48,218,.22],[62,-208,-.65]]){
+  const q=new THREE.Group();q.position.set(gx,terrainBaseHeight(gx,gz),gz);q.rotation.y=rot;world.add(q);
+  cylinder(mats.dark,0,.28,0,1.45,1.45,.42,q);
+  cylinder(gunMat,0,.58,0,.62,.72,.45,q);
+  const barrel=box(gunMat,0,1.15,-2.1,.34,.34,4.8,q);barrel.rotation.x=-.04;
+  box(gunMat,0,.93,-.3,1.45,.75,1.2,q);
+  for(const side of [-1,1]){
+   const wheel=cylinder(mats.dark,side*1.5,.48,.1,.58,.58,.24,q);wheel.rotation.z=Math.PI/2;
+   cylinder(metal,side*1.65,.48,.1,.2,.2,.27,q).rotation.z=Math.PI/2;
+  }
+  for(let i=0;i<5;i++){const shard=mesh(new THREE.DodecahedronGeometry(1,0),i%2?mats.rust:mats.concrete,rand(-3,3),.12,rand(-3,3),rand(.2,.6),rand(.12,.35),rand(.2,.6),q);shard.rotation.set(rand(0,.4),rand(0,TAU),rand(0,.4))}
+  solids.push({x:gx,z:gz,hx:2.8,hz:3.3,tower:true,baseY:terrainBaseHeight(gx,gz),height:1.8});
+ }
+}
+
+function init(){addFutureFront();addLargeWorld();addBattlefieldVegetation();addBattlefieldPOIs();addBattlefieldRuinClusters();addWreckedMilitaryVehicles();addForwardCommandPost();addForwardDefensivePositions();if(!helicopter)helicopter=makeHelicopter();if(player.model)scene.remove(player.model.root);player.model=makeSoldier();player.model.root.visible=false;applyQuality();resize();window.__witwBooted=true;$('loading').classList.add('hidden');requestAnimationFrame(frame)}
 init();
 </script><script>
 // Prevent a silent infinite spinner if the browser cannot download Three.js or its module dependencies.

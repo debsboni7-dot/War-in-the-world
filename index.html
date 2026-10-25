@@ -206,7 +206,7 @@ function addBattlefieldDamageLandmarks(){
  const wireMat=new THREE.MeshStandardMaterial({color:'#202522',metalness:.52,roughness:.75});
  const concreteMat=new THREE.MeshStandardMaterial({color:'#77786e',roughness:1});
  const fadedPaint=new THREE.MeshStandardMaterial({color:'#c5b887',roughness:.96});
- const poleSpecs=[[-18,-186,.2],[18,-8,-.14],[-19,176,.32],[19,342,-.22],[-156,14,.42],[156,-8,-.3]];
+ const poleSpecs=[[-18,-186,.2],[18,-178,-.14],[-19,176,.32],[19,184,-.22],[-156,14,.42],[-148,22,-.3]];
  const tops=[];
  for(let i=0;i<poleSpecs.length;i++){
   const [x,z,lean]=poleSpecs[i],y=terrainBaseHeight(x,z);

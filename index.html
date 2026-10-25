@@ -371,7 +371,8 @@ const weaponData=[
 ['Nova Scatter','Fusil à énergie',8,40,16,.82,6],
 ['Glacier SMG','Mitraillette à énergie',38,190,18,.057,1],
 ['Thunderclap','Mitrailleuse futuriste',100,400,20,.072,1],
-['Spectre DMR','Fusil semi-auto',16,96,44,.24,1]
+['Spectre DMR','Fusil semi-auto',16,96,44,.24,1],
+['Titan Breacher','Fusil à pompe',7,35,19,.92,10]
 ].map((a,i)=>({id:i,name:a[0],type:a[1],mag:a[2],reserve:a[3],damage:a[4],delay:a[5],pellets:a[6]}));
 const weaponMeta={
 'Kobra-9 Tactical':{rarity:'Rare',color:'#4fc3f7',effect:'Pistolet équilibré : tirs rapides et dégâts réguliers.'},
@@ -392,7 +393,8 @@ const weaponMeta={
 'Nova Scatter':{rarity:'Épique',color:'#b56cff',effect:'Fusil à énergie à dispersion : plusieurs projectiles par tir.'},
 'Glacier SMG':{rarity:'Épique',color:'#b56cff',effect:'Mitraillette énergétique : tirs très rapides et dégâts réguliers.'},
 'Thunderclap':{rarity:'Légendaire',color:'#ffb547',effect:'Mitrailleuse futuriste : chargeur massif, idéale pour saturer une zone.'},
-'Spectre DMR':{rarity:'Épique',color:'#b56cff',effect:'DMR semi-automatique : précision et dégâts constants à distance.'}
+'Spectre DMR':{rarity:'Épique',color:'#b56cff',effect:'DMR semi-automatique : précision et dégâts constants à distance.'},
+'Titan Breacher':{rarity:'Légendaire',color:'#ffb547',effect:'Fusil à pompe lourd : 10 plombs par tir, très puissant de près mais lent à recharger.'}
 };
 function weaponRarity(w){return weaponMeta[w?.[0]]||{rarity:'Standard',color:/précision|sniper|DMR/i.test(w?.[1]||'')?'#4fc3f7':/pompe/i.test(w?.[1]||'')?'#d8b56a':'#9bd5a5',effect:'Arme standard : utilise ses dégâts, son chargeur et sa cadence propres.'}}
 const defaultWeapon=weaponData[0];let cameraYaw=0,cameraPitch=.03,recoilKick=0;let player={pos:V(0,0,0),hp:100,yaw:0,bodyYaw:0,pitch:.03,vy:0,weapon:-1,mag:0,reserve:0,weapons:[null,null],activeSlot:0,cooldown:0,reload:0,kills:0,parachute:false,landed:false,anim:null,mixer:null,model:null,gun:null,heldModel:null,backModel:null,gadgets:{grenade:0,c4:0}};let gadgetC4=null,gadgetProjectiles=[];let helicopter=null,heliMixer=null,heliTime=0,fallTime=0,falling=false,matchStart=false,lootTarget=null;

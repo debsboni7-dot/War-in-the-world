@@ -715,6 +715,21 @@ function addBattlefieldPOIs(){
   solids.push({x,z,hx:5.2,hz:4.2,tower:true,baseY:terrainBaseHeight(x,z),height:3.1});
  }
  ruinedBlock(-68,-155,.22);ruinedBlock(76,158,-.32);ruinedBlock(205,-42,.65);ruinedBlock(-212,42,-.48);
+ // Forward fighting positions: shallow trenches, timber braces and sandbag lips add tactical lanes.
+ const trenchDirt=new THREE.MeshStandardMaterial({color:'#514b40',roughness:1});
+ const trenchTimber=new THREE.MeshStandardMaterial({color:'#44382b',roughness:.98});
+ function fightingTrench(x,z,rot=0){
+  const g=new THREE.Group();g.position.set(x,terrainBaseHeight(x,z),z);g.rotation.y=rot;world.add(g);
+  box(trenchDirt,0,.04,0,15,.08,3.2,g);
+  for(const side of [-1,1]){
+   box(wornConcrete,0,.38,side*1.72,15,.72,.42,g);
+   for(let k=-6;k<=6;k+=2){box(mats.sandbag,k*1.05,.82,side*1.72,.98,.38,.5,g)}
+   for(let k=-5;k<=5;k+=5)box(trenchTimber,k*1.35,.3,side*1.35,.16,.62,.16,g);
+   solids.push({x:x+Math.sin(rot)*side*1.72,z:z+Math.cos(rot)*side*1.72,hx:7.5,hz:.28,tower:true,baseY:terrainBaseHeight(x,z),height:1.05});
+  }
+  for(let k=-5;k<=5;k+=5){const crate=mesh(new THREE.BoxGeometry(.9,.72,.72),mats.wood||mats.dark,k,.38,rand(-.55,.55),1,1,1,g);crate.rotation.y=rand(-.12,.12)}
+ }
+ fightingTrench(-245,-165,.24);fightingTrench(248,18,-.18);fightingTrench(-245,205,.62);
  // Active combat scars: burning wreckage, layered smoke and scorched impact craters.
  const fireMat=new THREE.MeshStandardMaterial({color:'#ff6a27',emissive:'#ff3b0b',emissiveIntensity:2.4,roughness:.8});
  const emberMat=new THREE.MeshStandardMaterial({color:'#ffd06a',emissive:'#ff8b20',emissiveIntensity:3.2,roughness:.7});

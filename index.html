@@ -853,7 +853,50 @@ function addBattlefieldPOIs(){
  }
  battleScar(-22,-12,1);battleScar(55,12,.85);battleScar(-92,48,1.1);battleScar(118,-74,.9);battleScar(15,104,.8);
 }
-function init(){addFutureFront();addLargeWorld();addBattlefieldVegetation();addBattlefieldPOIs();if(!helicopter)helicopter=makeHelicopter();if(player.model)scene.remove(player.model.root);player.model=makeSoldier();player.model.root.visible=false;applyQuality();resize();window.__witwBooted=true;$('loading').classList.add('hidden');requestAnimationFrame(frame)}
+function addBattlefieldRuinClusters(){
+ const concrete=new THREE.MeshStandardMaterial({color:'#77786e',roughness:1});
+ const brokenConcrete=new THREE.MeshStandardMaterial({color:'#4d514d',roughness:1});
+ const exposedBrick=new THREE.MeshStandardMaterial({color:'#755b48',roughness:.98});
+ const interior=new THREE.MeshStandardMaterial({color:'#252a27',roughness:1});
+ const rebar=new THREE.MeshStandardMaterial({color:'#353c39',metalness:.58,roughness:.8});
+ const locations=[[-168,-118,.22],[174,-142,-.38],[-176,128,-.16],[174,142,.55],[232,88,-.42],[-228,-64,.35]];
+ for(let n=0;n<locations.length;n++){
+  const [x,z,rot]=locations[n],g=new THREE.Group();
+  g.position.set(x,terrainBaseHeight(x,z),z);g.rotation.y=rot;world.add(g);
+  // Broken shell of a small urban building: exposed interior, uneven wall heights and a partial roof.
+  box(concrete,0,.13,0,13,.26,10,g);
+  box(brokenConcrete,-6.1,1.45,0,.55,2.9,9.5,g);
+  box(concrete,1.2,1.05,-4.7,10.2,2.1,.55,g);
+  box(exposedBrick,5.9,.85,1.4,.5,1.7,6.8,g);
+  box(brokenConcrete,-1.7,2.4,4.6,6.2,.35,.55,g);
+  box(interior,0,.55,-4.38,3.3,1.05,.06,g);
+  // Jagged upper wall remnants.
+  for(let k=0;k<4;k++){
+   const wx=-4.8+k*2.35,wh=rand(.35,1.2);
+   const cap=box(k%2?exposedBrick:concrete,wx,2.85+wh*.15,-4.55,.75,wh,.48,g);
+   cap.rotation.z=rand(-.16,.16);
+  }
+  // Reinforcing bars protrude from two fractured corners.
+  for(const side of [-1,1]){
+   for(let k=0;k<3;k++){
+    const bar=cylinder(rebar,side*5.6,2.9+k*.04,side===-1?-4.2:3.9,.035,.045,1.25,g);
+    bar.rotation.z=side*(.35+k*.16);bar.rotation.x=.2*k;
+   }
+  }
+  // Rubble apron around the shell.
+  for(let k=0;k<26;k++){
+   const rx=rand(-8.5,8.5),rz=rand(-7,7),h=rand(.16,.62),sc=rand(.25,.95);
+   if(Math.abs(rx)<4&&Math.abs(rz)<3)continue;
+   const stone=mesh(new THREE.DodecahedronGeometry(1,0),k%3===0?exposedBrick:(k%2?brokenConcrete:concrete),rx,h*.42,rz,sc*1.35,h,sc,g);
+   stone.rotation.set(rand(-.35,.35),rand(0,TAU),rand(-.3,.3));
+  }
+  // Concrete lintel fallen across one side, with a tilted slab to break the silhouette.
+  const lintel=box(brokenConcrete,rand(-1.8,1.8),.55,5.5,4.8,.32,.45,g);lintel.rotation.z=rand(-.22,.22);
+  const slab=box(concrete,rand(-3,3),.5,rand(-1,2),3.2,.18,2.1,g);slab.rotation.set(rand(-.18,.18),rand(0,TAU),rand(-.18,.18));
+  solids.push({x,z,hx:6.7,hz:5.2,tower:true,baseY:terrainBaseHeight(x,z),height:3.1});
+ }
+}
+function init(){addFutureFront();addLargeWorld();addBattlefieldVegetation();addBattlefieldPOIs();addBattlefieldRuinClusters();if(!helicopter)helicopter=makeHelicopter();if(player.model)scene.remove(player.model.root);player.model=makeSoldier();player.model.root.visible=false;applyQuality();resize();window.__witwBooted=true;$('loading').classList.add('hidden');requestAnimationFrame(frame)}
 init();
 </script><script>
 // Prevent a silent infinite spinner if the browser cannot download Three.js or its module dependencies.

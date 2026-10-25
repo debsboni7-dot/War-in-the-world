@@ -111,16 +111,16 @@ mats.soil.map=surfaceTextures['terre'];mats.concrete.map=surfaceTextures['béton
 for(const k of ['soil','concrete','metal','sandbag','dark','green','rust','glass','yellow'])mats[k].needsUpdate=true;
 const weaponTextureMaterials=surfaceTextureSpecs.map(v=>new THREE.MeshStandardMaterial({map:surfaceTextures[v[0]],roughness:/verre/.test(v[0])?.35:.88,metalness:/acier|métal/.test(v[0])?.55:.04}));
 
-function terrainBaseHeight(x,z){return Math.sin(x*.018)*.035+Math.cos(z*.016)*.03+Math.sin((x-z)*.012)*.025}
-const terrainGeo=new THREE.PlaneGeometry(1200,1200,72,72);const pos=terrainGeo.attributes.position;for(let i=0;i<pos.count;i++){const x=pos.getX(i),y=pos.getY(i);pos.setZ(i,terrainBaseHeight(x,-y)+.25)}terrainGeo.computeVertexNormals();const terrainMat=new THREE.MeshStandardMaterial({map:surfaceTextures['asphalte'],roughness:.92,metalness:.12,color:'#aeb8bf'});const terrain=new THREE.Mesh(terrainGeo,terrainMat);terrain.rotation.x=-Math.PI/2;terrain.position.y=-.25;terrain.receiveShadow=true;world.add(terrain);
+function terrainBaseHeight(x,z){return Math.sin(x*.018)*.35+Math.cos(z*.016)*.28+Math.sin((x-z)*.012)*.18+Math.sin(x*.047+z*.031)*.09}
+const terrainGeo=new THREE.PlaneGeometry(1200,1200,180,180);const pos=terrainGeo.attributes.position;for(let i=0;i<pos.count;i++){const x=pos.getX(i),y=pos.getY(i);pos.setZ(i,terrainBaseHeight(x,-y)+.25)}terrainGeo.computeVertexNormals();const terrainMat=new THREE.MeshStandardMaterial({map:surfaceTextures['terre'],roughness:.98,metalness:.02,color:'#d0c7b0'});const terrain=new THREE.Mesh(terrainGeo,terrainMat);terrain.rotation.x=-Math.PI/2;terrain.position.y=-.25;terrain.receiveShadow=true;world.add(terrain);
 // Real scanned PBR texture sets from Poly Haven (CC0). If a remote file fails, the local procedural texture remains in place.
 const pbrLoader=new THREE.TextureLoader();
 function loadExternalPBR(material,slug,repeatX=1,repeatY=1){
- const root='https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/'+slug+'/'+slug;
- const configure=(t,isColor=false)=>{t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(repeatX,repeatY);t.anisotropy=Math.min(2,renderer.capabilities.getMaxAnisotropy());if(isColor)t.colorSpace=THREE.SRGBColorSpace;return t};
- pbrLoader.load(root+'_diff_1k.jpg',t=>{material.map=configure(t,true);material.needsUpdate=true},undefined,()=>{});
- pbrLoader.load(root+'_nor_gl_1k.jpg',t=>{material.normalMap=configure(t);material.normalScale.set(1,1);material.needsUpdate=true},undefined,()=>{});
- pbrLoader.load(root+'_rough_1k.jpg',t=>{material.roughnessMap=configure(t);material.needsUpdate=true},undefined,()=>{});
+ const root='https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/'+slug+'/'+slug;
+ const configure=(t,isColor=false)=>{t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(repeatX,repeatY);t.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());if(isColor)t.colorSpace=THREE.SRGBColorSpace;return t};
+ pbrLoader.load(root+'_diff_2k.jpg',t=>{material.map=configure(t,true);material.needsUpdate=true},undefined,()=>{});
+ pbrLoader.load(root+'_nor_gl_2k.jpg',t=>{material.normalMap=configure(t);material.normalScale.set(1,1);material.needsUpdate=true},undefined,()=>{});
+ pbrLoader.load(root+'_rough_2k.jpg',t=>{material.roughnessMap=configure(t);material.needsUpdate=true},undefined,()=>{});
 }
 loadExternalPBR(mats.soil,'brown_mud_leaves_01',12,12);
 loadExternalPBR(mats.concrete,'concrete',3,3);

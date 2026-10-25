@@ -428,7 +428,7 @@ assetInput.addEventListener('change',async()=>{
  assetInput.value='';
 });
 renderPersonalAssets();
-function start(){ $('assetsPanel').classList.add('hidden');reset();state='playing';$('lobby').classList.add('hidden');$('results').classList.add('hidden');$('settings').classList.add('hidden');$('hud').classList.remove('hidden');toast('Pistolet équipé. Fusil d’assaut, fusil à pompe et sniper disponibles dans l’entrepôt. Joystick avant = avancer.',4)}
+function start(){ $('assetsPanel').classList.add('hidden');reset();state='playing';$('lobby').classList.add('hidden');$('results').classList.add('hidden');$('settings').classList.add('hidden');$('hud').classList.remove('hidden');toast('Atterris puis récupère le pistolet placé près de toi. D’autres armes sont réparties dans la ville. Joystick avant = avancer.',4)}
 function backLobby(){state='lobby';$('hud').classList.add('hidden');$('results').classList.add('hidden');$('settings').classList.add('hidden');$('lobby').classList.remove('hidden');if(player.model)player.model.root.visible=false;if(helicopter)helicopter.visible=false}
 function openSettings(){if(state==='playing'){state='paused';settingsFrom='playing'}else settingsFrom='lobby';$('settings').classList.remove('hidden')}
 function closeSettings(){ $('settings').classList.add('hidden');if(settingsFrom==='playing')state='playing'}

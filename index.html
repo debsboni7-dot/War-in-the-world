@@ -935,7 +935,48 @@ function addWreckedMilitaryVehicles(){
   solids.push({x,z,hx:3.3,hz:1.65,tower:true,baseY:terrainBaseHeight(x,z),height:2.4});
  }
 }
-function init(){addFutureFront();addLargeWorld();addBattlefieldVegetation();addBattlefieldPOIs();addBattlefieldRuinClusters();addWreckedMilitaryVehicles();if(!helicopter)helicopter=makeHelicopter();if(player.model)scene.remove(player.model.root);player.model=makeSoldier();player.model.root.visible=false;applyQuality();resize();window.__witwBooted=true;$('loading').classList.add('hidden');requestAnimationFrame(frame)}
+function addForwardDefensivePositions(){
+ const earth=new THREE.MeshStandardMaterial({color:'#514b3b',roughness:1});
+ const concrete=new THREE.MeshStandardMaterial({color:'#6b6b5e',roughness:.98});
+ const net=new THREE.MeshStandardMaterial({color:'#3f5037',roughness:1,side:THREE.DoubleSide});
+ const wood=new THREE.MeshStandardMaterial({color:'#493a2b',roughness:.96});
+ const metal=new THREE.MeshStandardMaterial({color:'#424940',metalness:.38,roughness:.8});
+ const stencil=new THREE.MeshStandardMaterial({color:'#c7b982',roughness:.9});
+ function position(x,z,rot=0){
+  const g=new THREE.Group();g.position.set(x,terrainBaseHeight(x,z),z);g.rotation.y=rot;world.add(g);
+  // Low fighting pit with an irregular dirt lip, so the position reads clearly from a distance.
+  box(earth,0,.12,0,10.5,.24,8.2,g);
+  box(concrete,0,.35,-3.15,8.8,.7,.42,g);
+  box(concrete,-4.15,.42,0,.42,.84,6.3,g);
+  box(concrete,4.15,.42,0,.42,.84,6.3,g);
+  for(let row=0;row<2;row++)for(let i=0;i<7;i++){
+   const xx=-3.3+i*1.1,zz=3.25-row*.57;
+   box(mats.sandbag,xx,.42+row*.37,zz,1.02,.38,.48,g);
+  }
+  // A damaged camouflage canopy on timber posts.
+  for(const sx of [-3.7,3.7])for(const sz of [-2.5,2.2])box(wood,sx,2.15,sz,.13,4.3,.13,g);
+  const canopy=box(net,0,3.65,-.15,8.2,.12,5.7,g);
+  canopy.rotation.z=.035;canopy.rotation.x=-.025;
+  for(let i=0;i<8;i++){
+   const xx=-3.3+i*.94;
+   const strip=box(net,xx,3.51,2.65,.42,.08,1.05,g);
+   strip.rotation.x=(i%2?.18:-.14);
+  }
+  // Stacked ammunition and a battered steel locker.
+  for(let i=0;i<3;i++){
+   const crate=box(i===1?wood:metal,-2.5+i*1.2,.64,-.6,1.02,1.12,.9,g);
+   crate.rotation.y=(i-1)*.09;
+   box(stencil,-2.5+i*1.2,1.22,-.14,.46,.045,.035,g);
+  }
+  box(metal,0,.94,-3.48,1.15,1.25,.18,g);
+  box(stencil,0,1.04,-3.375,.52,.12,.025,g);
+  solids.push({x,z,hx:5.35,hz:4.25,tower:true,baseY:terrainBaseHeight(x,z),height:3.9});
+ }
+ position(42,-152,.2);
+ position(-42,151,-.25);
+ position(214,16,Math.PI*.48);
+}
+function init(){addFutureFront();addLargeWorld();addBattlefieldVegetation();addBattlefieldPOIs();addBattlefieldRuinClusters();addWreckedMilitaryVehicles();addForwardDefensivePositions();if(!helicopter)helicopter=makeHelicopter();if(player.model)scene.remove(player.model.root);player.model=makeSoldier();player.model.root.visible=false;applyQuality();resize();window.__witwBooted=true;$('loading').classList.add('hidden');requestAnimationFrame(frame)}
 init();
 </script><script>
 // Prevent a silent infinite spinner if the browser cannot download Three.js or its module dependencies.

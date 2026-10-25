@@ -85,6 +85,18 @@ scene.add(new THREE.HemisphereLight('#e4f8ff','#526b7c',2.35));const moon=new TH
 const ambient=new THREE.AmbientLight('#8dc8e8',.5);scene.add(ambient);
 const world=new THREE.Group();scene.add(world);const solids=[],loot=[],bots=[],smokes=[],tracers=[],vfx=[],bulletMarks=[],impactParticles=[],shellCasings=[],blastWaves=[],blastDebris=[];let state='lobby',elapsed=0,zoneR=480,last=performance.now(),toastLeft=0,fireHeld=false,mouseLook=false,settingsFrom='lobby',sens=cfg.sensitivity||1,aiming=false,crouched=false,runHeld=false,cameraMode=cfg.cameraMode||'third';
 const loader=new GLTFLoader();
+// Higgsfield battlefield scene: persistent public GLB, loaded into the actual playable Three.js scene.
+let higgsfieldBattlefield=null;
+loader.load('https://d2ol7oe51mr4n9.cloudfront.net/user_3L8BH1pH0WyTHJdboyJ7rT3kcR8/db6ca11a-82c9-41a2-bea1-b2ed3851512e.glb',gltf=>{
+  higgsfieldBattlefield=gltf.scene;
+  higgsfieldBattlefield.name='HIGGSFIELD_BATTLEFIELD';
+  higgsfieldBattlefield.position.set(0,0,-18);
+  higgsfieldBattlefield.scale.setScalar(1);
+  higgsfieldBattlefield.traverse(o=>{if(o.isMesh){o.castShadow=false;o.receiveShadow=true;if(o.material){o.material.side=THREE.DoubleSide}}});
+  scene.add(higgsfieldBattlefield);
+  console.info('Higgsfield battlefield loaded into gameplay');
+},undefined,error=>console.warn('Higgsfield battlefield failed to load:',error));
+
 const mats={soil:new THREE.MeshStandardMaterial({color:'#343d49',roughness:.94}),concrete:new THREE.MeshStandardMaterial({color:'#465361',roughness:.82}),metal:new THREE.MeshStandardMaterial({color:'#202e3d',roughness:.38,metalness:.72}),sandbag:new THREE.MeshStandardMaterial({color:'#465363',roughness:.92}),dark:new THREE.MeshStandardMaterial({color:'#101b2a',roughness:.58,metalness:.25}),green:new THREE.MeshStandardMaterial({color:'#253b4a',roughness:.78,metalness:.22}),rust:new THREE.MeshStandardMaterial({color:'#5a3d3c',roughness:.78,metalness:.2}),glass:new THREE.MeshStandardMaterial({color:'#123b52',emissive:'#087b9b',emissiveIntensity:.55,metalness:.55,roughness:.18}),yellow:new THREE.MeshStandardMaterial({color:'#d5a64c',emissive:'#9a4b08',emissiveIntensity:.12,roughness:.6}),skin:new THREE.MeshStandardMaterial({color:'#a77f61',roughness:.9})};
 function mesh(g,m,x,y,z,sx=1,sy=1,sz=1,parent=world){const o=new THREE.Mesh(g,m);o.position.set(x,y,z);o.scale.set(sx,sy,sz);o.castShadow=false;o.receiveShadow=true;o.userData.shadowCandidate=true;parent.add(o);return o}
 function box(m,x,y,z,sx,sy,sz,parent=world){return mesh(new THREE.BoxGeometry(1,1,1),m,x,y,z,sx,sy,sz,parent)}

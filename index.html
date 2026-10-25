@@ -180,6 +180,26 @@ function addRoadDamageDetails(){
  }
 }
 addRoadDamageDetails();
+// Damaged roadside steel barriers, with gaps and bent sections around the impact zone.
+function addBrokenRoadBarriers(){
+ const steel=new THREE.MeshStandardMaterial({color:'#4a514b',metalness:.58,roughness:.78});
+ const rust=new THREE.MeshStandardMaterial({color:'#755b3e',metalness:.32,roughness:.92});
+ for(const side of [-1,1]){
+  for(const z0 of [-365,-315,-265,-215,-165,205,255,305,355]){
+   const g=new THREE.Group();g.position.set(side*9.7,terrainBaseHeight(side*9.7,z0),z0);g.rotation.y=side*.025;world.add(g);
+   for(let j=0;j<4;j++){
+    const z=j*3.1;
+    const post=box(steel,0,.48,z,.14,.96,.14,g);post.rotation.z=(j===2?.12:0);
+   }
+   const rail=box(steel,0,.73,4.65,.12,.22,9.8,g);
+   rail.rotation.x=(side===1?.035:-.035);
+   // Torn end caps and rust stains break up the otherwise uniform barrier.
+   box(rust,0,.74,9.4,.16,.25,.4,g);
+   for(const z of [1.1,6.2])box(rust,0,.86,z,.15,.05,.7,g);
+  }
+ }
+}
+addBrokenRoadBarriers();
 // Extra military points of interest: fortified checkpoint, observation towers and supply compound.
 function createWatchTower(x,z){
  const g=new THREE.Group();g.position.set(x,terrainBaseHeight(x,z),z);world.add(g);

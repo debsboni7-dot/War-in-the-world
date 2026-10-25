@@ -43,8 +43,8 @@ window.__witwBootError=function(message){
  var a=document.getElementById('openChrome');
  if(!a){a=document.createElement('a');a.id='openChrome';a.href='intent://debsboni7-dot.github.io/War-in-the-world/?v=3#Intent;scheme=https;package=com.android.chrome;end';a.textContent='OUVRIR DANS CHROME';a.style.cssText='display:inline-block;margin:18px auto 0;padding:13px 18px;border-radius:10px;background:#d8e79a;color:#101710;font:800 13px system-ui;text-decoration:none';l.appendChild(a)}
 };
-window.addEventListener('error',function(e){if(e&&e.message)window.__witwBootError(e.message);},true);
-window.addEventListener('unhandledrejection',function(e){window.__witwBootError(e&&e.reason&&(e.reason.message||e.reason)||'échec de chargement');});
+window.addEventListener('error',function(e){if(!window.__witwBooted&&e&&e.message)window.__witwBootError(e.message);},true);
+window.addEventListener('unhandledrejection',function(e){if(!window.__witwBooted)window.__witwBootError(e&&e.reason&&(e.reason.message||e.reason)||'échec de chargement');});
 </script>
 <script>
 window.__witwBootError=function(message){

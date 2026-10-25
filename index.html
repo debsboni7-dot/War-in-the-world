@@ -72,7 +72,8 @@ const $=id=>document.getElementById(id),clamp=(v,a,b)=>Math.max(a,Math.min(b,v))
 const coarse=matchMedia('(pointer:coarse)').matches;
 const isPS4=/PlayStation 4|PlayStation 5/i.test(navigator.userAgent||'');
 let cfg={quality:isPS4?'medium':'high',sensitivity:1};try{Object.assign(cfg,JSON.parse(localStorage.getItem('witw-config')||'{}'))}catch{}
-if(isPS4&&!localStorage.getItem('witw-config'))cfg.quality='medium';
+// Le navigateur PS4 reçoit un préréglage stable même si une ancienne sauvegarde demandait High.
+if(isPS4)cfg.quality='medium';
 const renderer=new THREE.WebGLRenderer({canvas:$('view'),antialias:false,alpha:false,powerPreference:'high-performance'});renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.28;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 const scene=new THREE.Scene();scene.background=new THREE.Color('#a8d8f4');scene.fog=new THREE.Fog('#a8d8f4',650,1500);
 const camera=new THREE.PerspectiveCamera(68,1,.1,1800);scene.add(camera);

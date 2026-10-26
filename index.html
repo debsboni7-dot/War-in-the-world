@@ -81,8 +81,8 @@ const saveData=!!(navigator.connection&&navigator.connection.saveData);
 const loadHeavyExternalAssets=!coarse&&!isPS4&&!saveData;
 if(isPS4)document.body.classList.add('ps4-mode');
 let cfg={quality:'medium',sensitivity:1};try{Object.assign(cfg,JSON.parse(localStorage.getItem('witw-config')||'{}'))}catch{}
-// Le navigateur PS4 reçoit un préréglage stable même si une ancienne sauvegarde demandait High.
-if(isPS4)cfg.quality='medium';
+// Le navigateur PS4 utilise le préréglage le plus léger pour limiter les blocages mémoire.
+if(isPS4)cfg.quality='low';
 // Start touch devices in the safest preset; players can still raise quality in settings.
 if(coarse)cfg.quality='low';
 const renderer=new THREE.WebGLRenderer({canvas:$('view'),antialias:false,alpha:false,powerPreference:'high-performance'});renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.28;renderer.shadowMap.type=THREE.PCFSoftShadowMap;

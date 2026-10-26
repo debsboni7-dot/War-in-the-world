@@ -708,17 +708,16 @@ function addFutureFront(){
  const blue=new THREE.MeshStandardMaterial({color:'#243d57',metalness:.78,roughness:.34});
  const red=new THREE.MeshStandardMaterial({color:'#ff765b',emissive:'#a51c12',emissiveIntensity:1.15,metalness:.3,roughness:.4});
  const glass=new THREE.MeshStandardMaterial({color:'#0a2438',emissive:'#087ca7',emissiveIntensity:.42,metalness:.65,roughness:.2});
- for(let i=0;i<16;i++){
+ for(let i=0;i<(coarse?6:16);i++){
   const side=i%2===0?-1:1,z=-140+Math.floor(i/2)*19+rand(-3,3),x=side*rand(42,88);
   const g=new THREE.Group();g.position.set(x,terrainBaseHeight(x,z),z);g.rotation.y=rand(-.16,.16);world.add(g);
   const w=rand(8,15),d=rand(7,13),h=rand(13,30);
   box(blue,0,h*.48,0,w,h*.96,d,g);
-  for(let fy=3;fy<h-2;fy+=4.2){
-   box(mats.concrete,0,fy,0,w+.15,.25,d+.2,g);
-   for(let wx=-w*.35;wx<w*.4;wx+=2.7)if(Math.random()>.24)box(glass,wx,fy+1.35,d*.501,.95,1.65,.08,g);
-  }
-  if(i%3!==0)box(cyan,side*(w*.5+.08),h*.45,0,.12,h*.55,.16,g);
-  if(i%2===0){const shard=box(mats.concrete,w*.28,h*.88,-d*.18,w*.46,1.1,d*.34,g);shard.rotation.z=rand(-.35,.35)}
+  if(!coarse){
+   for(let fy=3;fy<h-2;fy+=4.2){box(mats.concrete,0,fy,0,w+.15,.25,d+.2,g);for(let wx=-w*.35;wx<w*.4;wx+=2.7)if(Math.random()>.24)box(glass,wx,fy+1.35,d*.501,.95,1.65,.08,g)}
+   if(i%3!==0)box(cyan,side*(w*.5+.08),h*.45,0,.12,h*.55,.16,g);
+   if(i%2===0){const shard=box(mats.concrete,w*.28,h*.88,-d*.18,w*.46,1.1,d*.34,g);shard.rotation.z=rand(-.35,.35)}
+  }else{box(cyan,side*(w*.5+.08),h*.45,0,.12,h*.55,.16,g)}
   solids.push({x,z,hx:w*.53,hz:d*.53,tower:true,baseY:terrainBaseHeight(x,z),height:h});
  }
  for(const side of [-1,1])for(let z=-132;z<140;z+=34)box(cyan,side*8.1,terrainBaseHeight(side*8.1,z)+.12,z,.12,.09,rand(5,10));
@@ -769,33 +768,33 @@ function addLargeWorld(){
   box(white,v+8,.09,0,.28,.025,1160,world);box(white,0,.09,v+8,1160,.025,.28,world);
   for(const side of [-1,1]){box(white,v+side*10,.15,0,3,.26,1160,world);box(white,0,.15,v+side*10,1160,.26,3,world)}
  }
- // Dense blocks of four huge towers; small gaps are narrow service streets.
- for(let bx=-3;bx<=3;bx++)for(let bz=-3;bz<=3;bz++){
-  // Keep a denser skyline on desktop, but reduce draw calls on low-power touch phones.
-  // Full skyline density on every device: do not remove buildings based on touch/mobile detection.
+ // Dense skyline on desktop; a deliberately smaller skyline on touch phones.
+ const blockRange=coarse?2:3;
+ for(let bx=-blockRange;bx<=blockRange;bx++)for(let bz=-blockRange;bz<=blockRange;bz++){
   if(Math.abs(bx)<=1&&Math.abs(bz)<=1)continue;
-  const cx=bx*142,cz=bz*142;
-  for(let ix=0;ix<2;ix++)for(let iz=0;iz<2;iz++){
-   const x=cx+(ix?31:-31)+rand(-4,4),z=cz+(iz?31:-31)+rand(-4,4);
+  const cx=bx*142,cz=bz*142,nx=coarse?1:2,nz=coarse?1:2;
+  for(let ix=0;ix<nx;ix++)for(let iz=0;iz<nz;iz++){
+   const x=cx+(coarse?0:(ix?31:-31))+rand(-4,4),z=cz+(coarse?0:(iz?31:-31))+rand(-4,4);
    if(Math.abs(x)>550||Math.abs(z)>550)continue;
-   const w=rand(47,61),d=rand(47,61),h=rand(190,340);
+   const w=coarse?rand(38,48):rand(47,61),d=coarse?rand(38,48):rand(47,61),h=coarse?rand(70,150):rand(190,340);
    const g=new THREE.Group();g.position.set(x,terrainBaseHeight(x,z),z);g.rotation.y=rand(-.025,.025);world.add(g);
    box(towerMat,0,h/2,0,w,h,d,g);
-   for(const side of [-1,1]){
-    box(glassMat,side*(w/2+.035),h*.52,0,.08,h*.83,d*.74,g);
-    box(glassMat,0,h*.52,side*(d/2+.035),w*.74,h*.83,.08,g);
-    if(!coarse||((Math.abs(bx)+Math.abs(bz)+ix+iz)%2===0)){
+   if(!coarse){
+    for(const side of [-1,1]){
+     box(glassMat,side*(w/2+.035),h*.52,0,.08,h*.83,d*.74,g);
+     box(glassMat,0,h*.52,side*(d/2+.035),w*.74,h*.83,.08,g);
      box(cyan,side*(w/2+.12),h*.51,0,.22,h*.91,.22,g);
      box(cyan,0,h*.51,side*(d/2+.12),.22,h*.91,.22,g);
     }
-   }
-   for(let fy=18;fy<h-8;fy+=coarse?48:24)box(cyan,0,fy,0,w+.25,.42,d+.25,g);
-   if(!coarse||((Math.abs(bx)+Math.abs(bz)+ix+iz)%2===0)){
+    for(let fy=18;fy<h-8;fy+=24)box(cyan,0,fy,0,w+.25,.42,d+.25,g);
     box(neonPink,0,h*.84,d/2+.16,w*.52,.55,.12,g);
     box(neonPink,0,h*.42,-d/2-.18,Math.min(5,w*.12),h*.32,.16,g);
+    box(towerMat,0,h+.7,0,w+2,1.4,d+2,g);
+    box(cyan,0,h+2.1,0,1.1,2.8,1.1,g);
+   }else{
+    box(cyan,w*.5+.06,h*.55,0,.12,h*.7,.12,g);
+    box(towerMat,0,h+.35,0,w+1,.7,d+1,g);
    }
-   box(towerMat,0,h+.7,0,w+2,1.4,d+2,g);
-   if(!coarse)box(cyan,0,h+2.1,0,1.1,2.8,1.1,g);
    solids.push({x,z,hx:w*.52,hz:d*.52});
   }
  }

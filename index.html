@@ -74,9 +74,11 @@ import {FBXLoader} from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm
 import * as SkeletonUtils from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/utils/SkeletonUtils.js';
 const $=id=>document.getElementById(id),clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),rand=(a,b)=>a+Math.random()*(b-a),V=(x=0,y=0,z=0)=>new THREE.Vector3(x,y,z),TAU=Math.PI*2;
 const coarse=matchMedia('(pointer:coarse)').matches;
-// Keep touch devices on the local procedural fallback to avoid simultaneous heavy remote 3D downloads.
-const loadHeavyExternalAssets=!coarse;
 const isPS4=/PlayStation 4|PlayStation 5/i.test(navigator.userAgent||'');
+const saveData=!!(navigator.connection&&navigator.connection.saveData);
+// Keep phones, PS4 browsers, and data-saver sessions on the local procedural fallback.
+// This avoids simultaneous multi-megabyte GLB downloads that can exhaust memory or stall startup.
+const loadHeavyExternalAssets=!coarse&&!isPS4&&!saveData;
 if(isPS4)document.body.classList.add('ps4-mode');
 let cfg={quality:'medium',sensitivity:1};try{Object.assign(cfg,JSON.parse(localStorage.getItem('witw-config')||'{}'))}catch{}
 // Le navigateur PS4 reçoit un préréglage stable même si une ancienne sauvegarde demandait High.

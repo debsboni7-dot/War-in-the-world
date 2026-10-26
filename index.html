@@ -864,7 +864,7 @@ function addBattlefieldVegetation(){
   dummy.position.set(x,y+scale*.43,z);dummy.rotation.set(rand(-.15,.15),rand(0,TAU),rand(-.15,.15));dummy.scale.set(scale,scale*rand(.65,1),scale);dummy.updateMatrix();shrubs.setMatrixAt(si,dummy.matrix);
   dummy.position.set(x+scale*.18,y+scale*.72,z-scale*.12);dummy.scale.setScalar(scale*.55);dummy.updateMatrix();shrubLights.setMatrixAt(si,dummy.matrix);si++;
  }
- for(const inst of [grass,tips,shrubs,shrubLights]){inst.count=inst===grass||inst===tips?gi:si;inst.instanceMatrix.needsUpdate=true;inst.castShadow=false;inst.receiveShadow=false;inst.frustumCulled=true;inst.computeBoundingSphere();world.add(inst)}
+ for(const inst of [grass,tips,shrubs,shrubLights]){inst.count=inst===grass||inst===tips?gi:si;inst.instanceMatrix.needsUpdate=true;inst.castShadow=false;inst.receiveShadow=false;inst.frustumCulled=false;world.add(inst)}
 }
 function addBattlefieldPOIs(){
  const concrete=new THREE.MeshStandardMaterial({color:'#777b70',roughness:.94});

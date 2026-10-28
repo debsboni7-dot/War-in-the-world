@@ -52,7 +52,6 @@ const loader=new GLTFLoader();
 const mats={soil:new THREE.MeshStandardMaterial({color:'#5d6254',roughness:1}),concrete:new THREE.MeshStandardMaterial({color:'#464c48',roughness:.96}),metal:new THREE.MeshStandardMaterial({color:'#303936',roughness:.62,metalness:.45}),sandbag:new THREE.MeshStandardMaterial({color:'#6d7057',roughness:1}),dark:new THREE.MeshStandardMaterial({color:'#151b19',roughness:.8}),green:new THREE.MeshStandardMaterial({color:'#38483b',roughness:.9}),rust:new THREE.MeshStandardMaterial({color:'#584b3c',roughness:.9}),glass:new THREE.MeshStandardMaterial({color:'#172c30',metalness:.3,roughness:.25}),yellow:new THREE.MeshStandardMaterial({color:'#c2b66b',roughness:.75}),skin:new THREE.MeshStandardMaterial({color:'#a77f61',roughness:.9})};
 function mesh(g,m,x,y,z,sx=1,sy=1,sz=1,parent=world){const o=new THREE.Mesh(g,m);o.position.set(x,y,z);o.scale.set(sx,sy,sz);o.castShadow=false;o.receiveShadow=true;parent.add(o);return o}
 function box(m,x,y,z,sx,sy,sz,parent=world){return mesh(new THREE.BoxGeometry(1,1,1),m,x,y,z,sx,sy,sz,parent)}
-function cylinder(m,x,y,z,rt,rb,h,parent=world){return mesh(new THREE.CylinderGeometry(rt,rb,h,10),m,x,y,z,1,1,1,parent)}
 // Terrain material generated locally: layered noise, mud, gravel, tracks and scorched marks.
 const tc=document.createElement('canvas');tc.width=tc.height=512;const ctx=tc.getContext('2d');ctx.fillStyle='#54594d';ctx.fillRect(0,0,512,512);
 for(let i=0;i<28000;i++){const x=Math.random()*512,y=Math.random()*512,n=Math.floor(rand(43,105));ctx.fillStyle=Math.random()>.52?'rgba(130,125,100,.12)':'rgba(12,17,14,.17)';ctx.fillRect(x,y,rand(1,4),rand(1,3))}
@@ -131,7 +130,7 @@ function makeSoldier(enemy=false){
   scene.add(root);
   return {root,mixer,gun,phase:rand(0,TAU)}
 }
-function makeHelicopter(){const g=new THREE.Group();scene.add(g);const body=mesh(new THREE.CapsuleGeometry(1.2,3.4,4,8),mats.green,0,0,0,1,1,1,g);body.rotation.z=Math.PI/2;const cockpit=mesh(new THREE.SphereGeometry(1,12,8),mats.glass,2.1,.05,0,1.1,.68,.9,g);const tail=box(mats.green,-3.1,.15,0,3.2,.25,.32,g);box(mats.green,-4.3,.45,0,.7,1,.2,g);const mast=cylinder(mats.metal,0,1.4,0,.08,.08,1,g);const rotor=box(mats.dark,0,1.9,0,9,.08,.22,g);rotor.userData.rotor=true;const tailrotor=box(mats.dark,-4.2,.75,0,.1,.1,1.3,g);tailrotor.userData.rotor=true;return g}
+
 // Modèle militaire Meshy optimisé (3,7 Mo, textures PBR compressées). Chargement non bloquant.
 const HELICOPTER_GLB='https://d2ol7oe51mr4n9.cloudfront.net/user_3L8BH1pH0WyTHJdboyJ7rT3kcR8/c823139e-f9ba-4e5a-9d92-921d3b661742.glb';
 loadModel(HELICOPTER_GLB).then(gltf=>{

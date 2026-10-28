@@ -64,25 +64,16 @@ for(let i=0;i<18;i++){const x=rand(-140,140),z=rand(-150,150),r=rand(1.5,5);cons
 function building(x,z,w,d,h){const g=new THREE.Group();g.position.set(x,0,z);world.add(g);box(mats.concrete,0,h/2,0,w,h,d,g);box(mats.dark,0,h*.42,d/2+.02,w*.16,h*.62,.06,g);for(let s of [-1,1]){box(mats.glass,s*w*.27,h*.65,d/2+.04,w*.2,.55,.05,g);box(mats.metal,s*w*.27,h*.65,-d/2-.04,w*.2,.55,.05,g)}box(mats.metal,0,h+.12,0,w+.35,.24,d+.35,g);for(let i=0;i<Math.floor(w/2);i++)box(mats.dark,-w/2+1+i*2,.4,-d/2-.08,.09,.8,.08,g);solids.push({x,z,hx:w*.55,hz:d*.55});return g}
 for(const a of [[-30,-35,16,14,6],[25,-40,18,13,7],[-50,12,13,17,5],[48,23,17,14,6],[-15,55,15,12,5],[68,-8,12,18,5],[5,83,20,12,7],[-74,-45,16,14,6],[80,64,16,12,5]])building(...a);
 // Arbres Meshy : remplacement des troncs cylindriques par un modèle 3D optimisé.
-const TREE_GLB='https://d2ol7oe51mr4n9.cloudfront.net/user_3L8BH1pH0WyTHJdboyJ7rT3kcR8/e90fe4d1-46b8-4fb3-86ac-397dbfaec621.glb';
+const TREE_GLB='https://d2ol7oe51mr4n9.cloudfront.net/user_3L8BH1pH0WyTHJdboyJ7rT3kcR8/9c8006c1-38d5-4588-ace0-9678d0c7c5be.glb';
 const treeSpawns=[];
 for(let i=0;i<52;i++){const a=rand(0,TAU),r=rand(65,190),x=Math.cos(a)*r,z=Math.sin(a)*r;treeSpawns.push({x,z,scale:rand(2.9,3.7),yaw:rand(0,TAU)});solids.push({x,z,hx:1.15,hz:1.15})}
 loadModel(TREE_GLB).then(gltf=>{
   const template=gltf.scene;
-  template.scale.setScalar(3.3);
   template.traverse(o=>{
     if(!o.isMesh)return;
-    const p=o.geometry.attributes.position;
-    const colors=new Float32Array(p.count*3);
-    const bark=new THREE.Color('#4b4030'),lowLeaf=new THREE.Color('#34432d'),highLeaf=new THREE.Color('#526443');
-    for(let i=0;i<p.count;i++){
-      const t=clamp((p.getY(i)+.32)/.64,0,1);
-      const c=t<.55?bark.clone().lerp(lowLeaf,t/.55):lowLeaf.clone().lerp(highLeaf,(t-.55)/.45);
-      colors[i*3]=c.r;colors[i*3+1]=c.g;colors[i*3+2]=c.b;
-    }
-    o.geometry.setAttribute('color',new THREE.BufferAttribute(colors,3));
-    o.material=new THREE.MeshStandardMaterial({color:'#ffffff',vertexColors:true,roughness:1,metalness:0,side:THREE.DoubleSide});
     o.frustumCulled=true;o.castShadow=false;o.receiveShadow=true;
+    const mats=Array.isArray(o.material)?o.material:[o.material];
+    for(const m of mats){if(m){m.roughness=Math.max(m.roughness??0.8,0.8);m.metalness=0;}}
   });
   for(const p of treeSpawns){const tree=template.clone(true);tree.scale.setScalar(p.scale);tree.position.set(p.x,p.scale*.73,p.z);tree.rotation.y=p.yaw;world.add(tree);}
 }).catch(e=>console.warn('Meshy tree unavailable; no cylindrical tree placeholders used',e));
